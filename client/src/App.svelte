@@ -8,6 +8,7 @@
   import Contact from './pages/Contact.svelte'
   import Footer from './components/Footer.svelte'
   import Login from './pages/Login.svelte'
+  import ResetPassword from './pages/ResetPassword.svelte'
   import PrivateRoute from './components/PrivateRoute.svelte';
   import ArtistDashboard from './pages/artist/ArtistDashboard.svelte';
   import VenueDashboard from './pages/venue/VenueDashboard.svelte';
@@ -46,6 +47,10 @@
 
     <Route path="/login">
       <Navbar><Login /></Navbar>
+    </Route>
+
+    <Route path="/reset-password">
+      <Navbar><ResetPassword /></Navbar>
     </Route>
 
     <PrivateRoute path="/dashboard/artist">

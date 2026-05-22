@@ -1,27 +1,12 @@
 import db from '../connection.js';
 
-export function getParticipantsByShowId (showId) {
-  return db.prepare(`
-    SELECT *
-    FROM show_participant
-    WHERE show_id = ?
-    `).all(showId);
-}
-
 export function createShowParticipant (participantData) {
-  const { id, showId, userId, artistId, venueId, role } = participantData;
+  const { showId, userId, artistId, venueId, role } = participantData;
 
   return db.prepare(`
-    INSERT INTO show_participant (participant_id, show_id, user_id, artist_id, venue_id, role)
-    VALUES (?, ?, ?, ?, ?, ?);
-    `).run(id, showId, userId, artistId, venueId, role);
-}
-
-export function deleteShowParticipant (participantId) {
-  return db.prepare(`
-    DELETE FROM show_participant
-    WHERE participant_id = ?;
-    `).run(participantId);
+    INSERT INTO show_participant (show_id, user_id, artist_id, venue_id, role)
+    VALUES (?, ?, ?, ?, ?);
+    `).run(showId, userId, artistId, venueId, role);
 }
 
 export function getShowParticipants (showId) {

@@ -1,6 +1,5 @@
   <script>
   import { toast } from 'svelte-sonner';
-  import { Progress } from '@skeletonlabs/skeleton-svelte';
   import { fetchPost } from '../util/fetchUtil.js';
 
   let name = $state('');
@@ -62,8 +61,5 @@
       </label>
 
       <button class="btn bg-blue-500 hover:bg-blue-400 text-white w-full font-bold py-4 text-xl" disabled={submitting} onclick={handleContact}>{submitting ? 'Sending...' : 'Send'}</button>
-      {#if submitting}
-        <Progress value={null}><Progress.Track><Progress.Range /></Progress.Track></Progress>
-      {/if}
     </div>
   </div>

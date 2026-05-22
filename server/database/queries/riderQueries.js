@@ -16,30 +16,20 @@ export function getVenueRider (venueId) {
     `).all(venueId);
 }
 
-export function updateRider (riderId, riderData) {
-  const { riderName, riderUrl } = riderData;
-
-  return db.prepare(`
-    UPDATE rider
-    SET rider_name = ?, rider_url = ?
-    WHERE rider_id = ?;
-    `).run(riderName, riderUrl, riderId);
-}
-
 export function createArtistRider (artistRiderData) {
-  const { id, artistId, riderName, riderUrl } = artistRiderData;
+  const { artistId, riderName, riderUrl } = artistRiderData;
 
   return db.prepare(`
-        INSERT INTO rider (rider_id, artist_id, rider_name, rider_url)
-        VALUES (?, ?, ?, ?);
-    `).run(id, artistId, riderName, riderUrl);
+    INSERT INTO rider (artist_id, rider_name, rider_url)
+    VALUES (?, ?, ?);
+    `).run(artistId, riderName, riderUrl);
 }
 
 export function createVenueRider (venueRiderData) {
-  const { id, venueId, riderName, riderUrl } = venueRiderData;
+  const { venueId, riderName, riderUrl } = venueRiderData;
 
   return db.prepare(`
-        INSERT INTO rider (rider_id, venue_id, rider_name, rider_url)
-        VALUES (?, ?, ?, ?);
-    `).run(id, venueId, riderName, riderUrl);
+    INSERT INTO rider (venue_id, rider_name, rider_url)
+    VALUES (?, ?, ?);
+    `).run(venueId, riderName, riderUrl);
 }

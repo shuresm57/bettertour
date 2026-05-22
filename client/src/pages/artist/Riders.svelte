@@ -1,5 +1,22 @@
 <script>
-  let { riders } = $props();
+  import { fetchPost } from '../../util/fetchUtil.js';
+
+  let { riders: initialRiders } = $props();
+  let riders = $state([...initialRiders]);
+  let showForm = $state(false);
+  let newName = $state('');
+  let newUrl = $state('');
+
+  async function addRider() {
+    const res = await fetchPost('/api/riders', { riderName: newName, riderUrl: newUrl });
+
+    if (res?.ok) {
+      riders.push({ name: newName, url: newUrl });
+      newName = '';
+      newUrl = '';
+      showForm = false;
+    }
+  }
 </script>
 
 <div class="card p-6">
@@ -8,13 +25,20 @@
       <h2 class="text-xl font-bold">Riders</h2>
       <p class="text-sm text-surface-400 mt-1">Your current rider documents.</p>
     </div>
-    <button class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
+    <button onclick={() => (showForm = !showForm)} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
       Add Rider
     </button>
   </div>
+
+  {#if showForm}
+    <div class="flex gap-2 mb-4">
+      <input bind:value={newName} placeholder="Rider name" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
+      <input bind:value={newUrl} placeholder="Document URL" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
+      <button onclick={addRider} class="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 transition-colors">
+        Save
+      </button>
+    </div>
+  {/if}
 
   {#if riders.length > 0}
     <ul class="flex flex-col divide-y divide-surface-700">
@@ -27,9 +51,6 @@
             class="flex items-center justify-between py-4 group"
           >
             <span class="font-medium group-hover:text-blue-400 transition-colors">{rider.name}</span>
-            <svg class="w-4 h-4 text-surface-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
           </a>
         </li>
       {/each}

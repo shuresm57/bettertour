@@ -1,4 +1,4 @@
-export function emailTemplate({ title, body, buttonText, buttonUrl }) {
+export function emailTemplate ({ title, body, buttonText, buttonUrl }) {
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -13,14 +13,12 @@ export function emailTemplate({ title, body, buttonText, buttonUrl }) {
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-          <!-- Header -->
-          <tr>
+        <tr>
             <td align="center" style="padding-bottom:24px;">
               <span style="font-size:24px;font-weight:bold;color:#60a5fa;letter-spacing:1px;">BetterTour</span>
             </td>
           </tr>
 
-          <!-- Card -->
           <tr>
             <td style="background-color:#1e293b;border-radius:12px;border:1px solid #3b82f6;padding:40px;">
 
@@ -32,8 +30,8 @@ export function emailTemplate({ title, body, buttonText, buttonUrl }) {
                 ${body}
               </div>
 
-              <!-- Button (optional) -->
-              ${buttonText && buttonUrl ? `
+              ${buttonText && buttonUrl
+? `
               <table cellpadding="0" cellspacing="0" style="margin-top:32px;">
                 <tr>
                   <td style="border-radius:8px;background-color:#3b82f6;">
@@ -43,12 +41,12 @@ export function emailTemplate({ title, body, buttonText, buttonUrl }) {
                     </a>
                   </td>
                 </tr>
-              </table>` : ''}
+              </table>`
+: ''}
 
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td align="center" style="padding-top:24px;font-size:12px;color:#475569;">
               &copy; ${new Date().getFullYear()} BetterTour. All rights reserved.

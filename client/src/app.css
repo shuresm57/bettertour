@@ -43,4 +43,5 @@ main {
   .btn-primary {
     @apply btn btn-lg bg-blue-500 font-bold outline-2 outline-offset-2 outline-blue-500;
   }
+
 }

@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-export async function sendWelcomeEmail(email, username) {
+export async function sendWelcomeEmail (email, username) {
   const info = await transporter.sendMail({
     from: '"BetterTour" <info@bettertour.com>',
     to: email,
@@ -30,7 +30,7 @@ export async function sendWelcomeEmail(email, username) {
   console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 }
 
-export async function sendPasswordRecoveryEmail(email, name, link) {
+export async function sendPasswordRecoveryEmail (email, name, link) {
   const info = await transporter.sendMail({
     from: '"BetterTour" <info@bettertour.com>',
     to: email,
@@ -49,7 +49,7 @@ export async function sendPasswordRecoveryEmail(email, name, link) {
   console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 }
 
-export async function sendContactEmail(name, email, message) {
+export async function sendContactEmail (name, email, message) {
   const info = await transporter.sendMail({
     from: '"BetterTour" <info@bettertour.com>',
     to: 'info@bettertour.com',

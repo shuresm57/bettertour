@@ -1,5 +1,5 @@
 <script>
-  let { artist } = $props();
+  let { entity: artist } = $props();
 </script>
 
 <div class="card p-6">

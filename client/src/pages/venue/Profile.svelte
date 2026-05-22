@@ -1,5 +1,5 @@
 <script>
-  let { venue } = $props();
+  let { entity: venue } = $props();
 </script>
 
 <div class="card p-6">

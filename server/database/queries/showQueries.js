@@ -1,11 +1,5 @@
 import db from '../connection.js';
 
-export function getShowLinkCode (linkCode) {
-  return db.prepare(`
-        SELECT * FROM show WHERE link_code = ?
-    `).run(linkCode);
-}
-
 export function updateShow (showId, showData) {
   const { date, schedule, eventName, contactOfDay, status } = showData;
 
@@ -17,28 +11,32 @@ export function updateShow (showId, showData) {
 }
 
 export function createShow (showData) {
-  const {
-    id, date, schedule, eventName,
-    contactOfDay, status
-  } = showData;
+  const { date, schedule, eventName, contactOfDay, status } = showData;
 
   return db.prepare(`
-        INSERT INTO show (show_id, date, schedule, event_name, contact_of_day, status)
-        VALUES (?, ?, ?, ?, ?, ?);
-    `).run(id, date, schedule, eventName, contactOfDay, status);
+    INSERT INTO show (date, schedule, event_name, contact_of_day, status)
+    VALUES (?, ?, ?, ?, ?);
+    `).run(date, schedule, eventName, contactOfDay, status);
 }
 
-export function getShowsByArtistId(artistId) {
+export function updateShowStatus (showId, status) {
   return db.prepare(`
-    SELECT s.*
+    UPDATE show SET status = ? WHERE show_id = ?;
+  `).run(status, showId);
+}
+
+export function getShowsByArtistId (artistId) {
+  return db.prepare(`
+    SELECT s.*, sp_venue.user_id AS venueId
     FROM show s
-    JOIN show_participant sp ON s.show_id = sp.show_id
-    WHERE sp.artist_id = ? AND sp.role = 'artist'
+    JOIN show_participant sp ON s.show_id = sp.show_id AND sp.role = 'artist'
+    LEFT JOIN show_participant sp_venue ON s.show_id = sp_venue.show_id AND sp_venue.role = 'venue'
+    WHERE sp.artist_id = ?
     ORDER BY s.date ASC
   `).all(artistId);
 }
 
-export function getShowsWithArtistsByVenueId(venueId) {
+export function getShowsWithArtistsByVenueId (venueId) {
   return db.prepare(`
     SELECT s.*, a.artist_name
     FROM show s

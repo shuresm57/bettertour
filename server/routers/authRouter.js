@@ -14,21 +14,21 @@ router.post('/api/register', authLimiter, async (req, res) => {
   const { password, email } = req.body;
 
   if (!password || !email) {
-    return res.status(400).send('Email and password are required.');
+    return res.status(400).send({ errorMessage: 'Email and password are required.' });
   }
 
   try {
     const existingUser = findByEmail(email);
     if (existingUser) {
-      return res.status(400).send('User already exists');
+      return res.status(400).send({ errorMessage: 'User already exists.' });
     }
 
     const hashedPassword = await hashPassword(password);
     saveUser(uuidv7(), email, hashedPassword);
     sendWelcomeEmail(email, email);
-    res.status(201).send('User registered successfully');
+    res.status(201).send({ data: 'User registered successfully.' });
   } catch {
-    res.status(500).send('Error registering user');
+    res.status(500).send({ errorMessage: 'Error registering user.' });
   }
 });
 
@@ -38,7 +38,7 @@ router.post('/api/login', authLimiter, async (req, res) => {
   try {
     const user = findByEmail(email);
     if (!user || !(await comparePassword(password, user.password_hash))) {
-      return res.status(401).send('Invalid credentials.');
+      return res.status(401).send({ errorMessage: 'Invalid credentials.' });
     }
 
     const type = findArtistByUserId(user.user_id) ? 'artist' : 'venue';
@@ -56,10 +56,9 @@ router.post('/api/login', authLimiter, async (req, res) => {
       maxAge: 60 * 60 * 1000
     });
 
-    res.status(200).send(`${email} logged in successfully`);
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).send('Login failed');
+    res.status(200).send({ data: `${email} logged in successfully.` });
+  } catch {
+    res.status(500).send({ errorMessage: 'Login failed.' });
   }
 });
 
@@ -69,7 +68,7 @@ router.post('/api/logout', (req, res) => {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict'
   });
-  res.status(200).send('Logged out successfully');
+  res.status(200).send({ data: 'Logged out successfully.' });
 });
 
 router.post('/api/request-reset', authLimiter, (req, res) => {
@@ -77,7 +76,7 @@ router.post('/api/request-reset', authLimiter, (req, res) => {
   const user = findByEmail(email);
 
   if (!user) {
-    return res.status(404).send('No account with that email.');
+    return res.status(404).send({ errorMessage: 'No account with that email.' });
   }
 
   const token = crypto.randomUUID();
@@ -86,20 +85,20 @@ router.post('/api/request-reset', authLimiter, (req, res) => {
   setExpiryTokenByEmail(token, expiry, email);
   sendPasswordRecoveryEmail(email, user.email, `${process.env.CLIENT_URL}/reset-password?token=${token}`);
 
-  res.status(200).send('Reset link sent.');
+  res.status(200).send({ data: 'Reset link sent.' });
 });
 
 router.post('/api/reset-password', authLimiter, async (req, res) => {
   const { token, newPassword } = req.body;
   const user = findUserByToken(token, Date.now());
   if (!user) {
-    return res.status(400).send('Invalid or expired token.');
+    return res.status(400).send({ errorMessage: 'Invalid or expired token.' });
   }
 
   const hashed = await hashPassword(newPassword);
   updateUserAndToken(hashed, user.user_id);
 
-  res.status(200).send('Password updated successfully.');
+  res.status(200).send({ data: 'Password reset successfully.' });
 });
 
 export default router;
