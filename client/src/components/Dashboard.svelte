@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fetchGet } from '../util/fetchUtil.js';
 
-  let { apiPath, title, entityKey, ridersKey, Overview, Shows, Profile } = $props();
+  let { apiPath, title, entityKey, ridersKey, Overview, Shows } = $props();
 
   let activeSection = $state('overview');
   let entity = $state(null);
@@ -30,11 +30,9 @@
     {#if !entity}
       <p class="text-surface-400">Could not load data.</p>
     {:else if activeSection === 'overview'}
-      <Overview {entity} {shows} {riders} onNavigate={(id) => activeSection = id} />
+      <Overview {entity} {shows} {riders} />
     {:else if activeSection === 'shows'}
       <Shows {shows} />
-    {:else if activeSection === 'profile'}
-      <Profile {entity} />
     {/if}
   </div>
 </div>

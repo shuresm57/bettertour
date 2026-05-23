@@ -55,6 +55,8 @@ export function registerShowSocket (io) {
         artist_name: artist.artist_name
       };
 
+      
+
       io.to(artist.user_id).emit('server-sends-show-request', showPayload);
       socket.emit('server-creates-show', showPayload);
     });

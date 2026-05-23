@@ -3,49 +3,24 @@
 
   let { entity: venue, shows, riders: techSpecs, onNavigate } = $props();
 
-  let profilePhotoUrl = $state(null);
-  let photoInput = $state();
-
   const confirmed = $derived(shows.filter(show => show.status === 'confirmed'));
   const pending = $derived(shows.filter(show => show.status === 'pending'));
   const nextShow = $derived(confirmed[0]);
 
-  function onPhotoSelected(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    profilePhotoUrl = URL.createObjectURL(file);
-  }
 </script>
 
 <div class="grid grid-cols-2 gap-5">
 
-  <!-- Profile -->
   <div class="card border border-surface-700 col-span-2 overflow-hidden">
-    <div class="relative h-80 bg-surface-800 flex items-center justify-center group">
-      {#if profilePhotoUrl}
-        <img src={profilePhotoUrl} alt="Venue" class="absolute inset-0 w-full h-full object-cover" />
-      {/if}
-      <input bind:this={photoInput} type="file" accept="image/*" class="hidden" onchange={onPhotoSelected} />
-      <button
-        onclick={() => photoInput.click()}
-        class="absolute top-3 right-3 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg
-          bg-black/50 hover:bg-black/70 text-white transition-colors opacity-0 group-hover:opacity-100"
-      >
-        Upload Photo
-      </button>
+    <div class="relative h-80 bg-surface-800 flex items-center justify-center">
+      <img src="/train-logo-building-aarhus-denmark-aarhus-denmark-july-train-logo-building-train-regional-venue-aarhus-333823516.webp" alt="Venue" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
       <div class="absolute inset-x-0 bottom-0 p-6 flex items-end justify-between gap-4">
         <div class="flex flex-col gap-0.5 min-w-0">
-          <h2 class="text-xl font-bold text-white">{venue.name}</h2>
+          <h2 class="text-xl font-bold text-white">{venue.venue_name}</h2>
           <p class="text-sm text-white/60">{venue.address}</p>
           <p class="text-sm text-white/40">{venue.bio}</p>
         </div>
-        <button
-          onclick={() => onNavigate('profile')}
-          class="shrink-0 text-xs font-medium px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-        >
-          Edit Profile
-        </button>
       </div>
     </div>
   </div>

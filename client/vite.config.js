@@ -5,6 +5,6 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    svelte() // <-- Must come after Tailwind
+    svelte()
   ]
 });

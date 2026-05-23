@@ -15,7 +15,6 @@ db.exec(`
     artist_name TEXT,
     bio TEXT,
     contact_email VARCHAR(255),
-    profile_picture_url TEXT,
     created_at TEXT DEFAULT (datetime('now'))
   );
 
@@ -25,7 +24,6 @@ db.exec(`
     address TEXT,
     bio TEXT,
     contact_email VARCHAR(255),
-    profile_picture_url TEXT,
     created_at TEXT DEFAULT (datetime('now'))
   );
 

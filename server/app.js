@@ -35,9 +35,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(generalLimiter);
+app.use(contactRouter);
 app.use(authRouter);
 app.use(userRouter);
-app.use(contactRouter);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('../client/dist'));
   app.get('/{*splat}', (req, res) => {

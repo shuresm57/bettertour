@@ -46,7 +46,7 @@
 
   <div class="flex flex-col gap-2">
     <span class="text-xs text-surface-400 font-medium">Schedule</span>
-    {#each scheduleEntries as entry, i}
+    {#each scheduleEntries as entry, i (i)}
       <div class="flex gap-2 items-center">
         <input bind:value={entry.key} placeholder="e.g. get-in" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
         <input bind:value={entry.value} placeholder="e.g. 19:00" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />

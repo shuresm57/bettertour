@@ -2,7 +2,7 @@ import { toast } from 'svelte-sonner';
 import { fetchPost, fetchGet } from './fetchUtil.js';
 import { userStore } from '../stores/userStore.svelte.js';
 
-export async function handleSignup (email, passwordOne, passwordTwo, onSuccess) {
+export async function handleSignup (email, passwordOne, passwordTwo, name, type, onSuccess) {
   if (!passwordMatchChecker(passwordOne, passwordTwo)) {
     return;
   }
@@ -14,7 +14,7 @@ export async function handleSignup (email, passwordOne, passwordTwo, onSuccess) 
     return;
   }
 
-  const response = await fetchPost('/api/register', { email, password: passwordOne });
+  const response = await fetchPost('/api/register', { email, password: passwordOne, name, type });
   if (!response?.ok) {
     toast.error('Error signing up. Try again later.');
     return;

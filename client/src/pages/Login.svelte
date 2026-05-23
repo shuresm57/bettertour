@@ -10,6 +10,8 @@
   let signupEmail = $state('');
   let signupPasswordOne = $state('');
   let signupPasswordTwo = $state('');
+  let signupName = $state('');
+  let signupType = $state('artist');
 
   let recoveryEmail = $state('');
 
@@ -25,7 +27,7 @@
 
   async function onSignup() {
     signupSubmitting = true;
-    await handleSignup(signupEmail, signupPasswordOne, signupPasswordTwo, showLogin);
+    await handleSignup(signupEmail, signupPasswordOne, signupPasswordTwo, signupName, signupType, showLogin);
     signupSubmitting = false;
   }
 
@@ -76,6 +78,17 @@
 
       <Tabs.Content value="signup">
         <div class="space-y-4 mt-4">
+          <Tabs value={signupType} onValueChange={(event) => (signupType = event.value)}>
+            <Tabs.List class="justify-center">
+              <Tabs.Trigger value="artist" class="text-xl">Artist</Tabs.Trigger>
+              <Tabs.Trigger value="venue" class="text-xl">Venue</Tabs.Trigger>
+              <Tabs.Indicator />
+            </Tabs.List>
+          </Tabs>
+          <label class="label">
+            <span class="label-text text-xl">{signupType === 'artist' ? 'Artist name' : 'Venue name'}</span>
+            <input class="input text-xl" type="text" bind:value={signupName} required />
+          </label>
           <label class="label">
             <span class="label-text text-xl">Email</span>
             <input class="input text-xl" type="email" bind:value={signupEmail} required />

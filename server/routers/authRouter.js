@@ -7,14 +7,18 @@ import { v7 as uuidv7 } from 'uuid';
 import { sendWelcomeEmail, sendPasswordRecoveryEmail } from '../util/emailUtil.js';
 import { findByEmail, findArtistByUserId, saveUser } from '../database/queries/userQueries.js';
 import { setExpiryTokenByEmail, findUserByToken, updateUserAndToken } from '../database/queries/authQueries.js';
+import { createArtist } from '../database/queries/artistQueries.js';
+import { createVenue } from '../database/queries/venueQueries.js';
+import { createArtistUser } from '../database/queries/artistUserQueries.js';
+import { createVenueUser } from '../database/queries/venueUserQueries.js';
 
 const router = Router();
 
 router.post('/api/register', authLimiter, async (req, res) => {
-  const { password, email } = req.body;
+  const { password, email, name, type } = req.body;
 
-  if (!password || !email) {
-    return res.status(400).send({ errorMessage: 'Email and password are required.' });
+  if (!password || !email || !name || !type) {
+    return res.status(400).send({ errorMessage: 'Email, password, name and type are required.' });
   }
 
   try {
@@ -24,7 +28,17 @@ router.post('/api/register', authLimiter, async (req, res) => {
     }
 
     const hashedPassword = await hashPassword(password);
-    saveUser(uuidv7(), email, hashedPassword);
+    const userId = uuidv7();
+    saveUser(userId, email, hashedPassword);
+
+    if (type === 'artist') {
+      const result = createArtist({ artistName: name, bio: '', contactEmail: email });
+      createArtistUser({ artistId: result.lastInsertRowid, userId, role: 'member' });
+    } else {
+      const result = createVenue({ venueName: name, address: '', bio: '', contactEmail: email });
+      createVenueUser({ venueId: result.lastInsertRowid, userId, role: 'member' });
+    }
+
     sendWelcomeEmail(email, email);
     res.status(201).send({ data: 'User registered successfully.' });
   } catch {
