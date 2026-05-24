@@ -38,6 +38,7 @@ export function registerShowSocket (io) {
         contactOfDay: data.contact_of_day,
         status: 'pending'
       });
+      
       const showId = result.lastInsertRowid;
 
       createShowParticipant({ showId, userId: data.venueId, artistId: null, venueId: venue.venue_id, role: 'venue' });

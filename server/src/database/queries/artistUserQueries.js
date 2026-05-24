@@ -1,5 +1,9 @@
 import db from '../connection.js';
 
+export function deleteArtistUser (artistId) {
+  return db.prepare(`DELETE FROM artist_user WHERE artist_id = ?`).run(artistId);
+}
+
 export function createArtistUser (artistUserData) {
   const { artistId, userId, role } = artistUserData;
 

@@ -9,6 +9,7 @@
   import Footer from './components/Footer.svelte'
   import Login from './pages/Login.svelte'
   import ResetPassword from './pages/ResetPassword.svelte'
+  import PrivacyPolicy from './pages/PrivacyPolicy.svelte'
   import PrivateRoute from './components/PrivateRoute.svelte';
   import ArtistDashboard from './pages/artist/ArtistDashboard.svelte';
   import VenueDashboard from './pages/venue/VenueDashboard.svelte';
@@ -51,6 +52,10 @@
 
     <Route path="/reset-password">
       <Navbar><ResetPassword /></Navbar>
+    </Route>
+
+    <Route path="/privacy-policy">
+      <Navbar><PrivacyPolicy /></Navbar>
     </Route>
 
     <PrivateRoute path="/dashboard/artist">

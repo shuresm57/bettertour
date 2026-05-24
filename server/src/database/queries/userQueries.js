@@ -26,6 +26,14 @@ export function findVenueByUserId (userId) {
     `).get(userId);
 }
 
+export function deleteUserById (userId) {
+  return db.prepare(`DELETE FROM user WHERE user_id = ?`).run(userId);
+}
+
+export function updateUserPassword (userId, hash) {
+  return db.prepare(`UPDATE user SET password_hash = ? WHERE user_id = ?`).run(hash, userId);
+}
+
 export function saveUser (id, email, password) {
   return db.prepare(`
     INSERT INTO user (user_id, email, password_hash)

@@ -5,7 +5,7 @@
   import ShowForm from '../../components/ShowForm.svelte';
   import { formatDate, statusClass } from '../../util/showUtil.js';
   import { userStore } from '../../stores/userStore.svelte.js';
-  import { fetchPost } from '../../util/fetchUtil.js';
+  import { fetchPost, fetchPut, fetchDelete } from '../../util/fetchUtil.js';
 
   let { shows: initialShows } = $props();
 
@@ -13,6 +13,7 @@
   let socket;
   let showForm = $state(false);
   let selectedShow = $state(null);
+  let editingShow = $state(false);
 
   onMount(() => {
     socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
@@ -52,6 +53,31 @@
       artistId: userStore.user.userId,
       show_id: show.show_id
     });
+  }
+
+  async function handleEdit(formData) {
+    if (!formData) { editingShow = false; return; }
+    const res = await fetchPut(`/api/artist/shows/${selectedShow.show_id}`, {
+      event_name: formData.event_name,
+      date: formData.date,
+      contact_of_day: formData.contact_of_day,
+      schedule: formData.schedule,
+      status: selectedShow.status
+    });
+    if (res?.ok) {
+      const updated = { ...selectedShow, event_name: formData.event_name, date: formData.date, contact_of_day: formData.contact_of_day, schedule: formData.schedule };
+      shows = shows.map(s => s.show_id === selectedShow.show_id ? updated : s);
+      selectedShow = updated;
+      editingShow = false;
+    }
+  }
+
+  async function handleDelete() {
+    const res = await fetchDelete(`/api/artist/shows/${selectedShow.show_id}`);
+    if (res?.ok) {
+      shows = shows.filter(s => s.show_id !== selectedShow.show_id);
+      selectedShow = null;
+    }
   }
 </script>
 
@@ -102,27 +128,42 @@
 </div>
 
 {#if selectedShow}
-  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onclick={() => selectedShow = null}></div>
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onclick={() => { selectedShow = null; editingShow = false; }}></div>
   <div class="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
     <div class="card bg-surface-900 border border-surface-700 p-8 w-full max-w-2xl space-y-4 pointer-events-auto">
-      <h2 class="text-xl font-bold">{selectedShow.event_name ?? 'Show'}</h2>
-      <p class="text-sm text-surface-400">{formatDate(selectedShow.date)}</p>
-      {#if selectedShow.contact_of_day}
-        <h1 class="text-3xl font-bold">Contact of day</h1>
-        <p class="text-sm text-surface-400">{selectedShow.contact_of_day}</p>
+      {#if editingShow}
+        <h2 class="text-xl font-bold">Edit Show</h2>
+        <ShowForm onSubmit={handleEdit} initialData={selectedShow} />
+      {:else}
+        <h2 class="text-xl font-bold">{selectedShow.event_name ?? 'Show'}</h2>
+        <p class="text-sm text-surface-400">{formatDate(selectedShow.date)}</p>
+        {#if selectedShow.contact_of_day}
+          <h1 class="text-3xl font-bold">Contact of day</h1>
+          <p class="text-sm text-surface-400">{selectedShow.contact_of_day}</p>
+        {/if}
+        <h1 class="text-3xl font-bold">Schedule</h1>
+        <ul class="flex flex-col divide-y divide-surface-700">
+          {#each Object.entries(selectedShow.schedule) as [key, value]}
+            <li class="flex items-center justify-between py-3">
+              <span class="text-surface-400 capitalize">{key.replaceAll('_', ' ')}</span>
+              <span class="font-mono font-semibold text-surface-100">{value}</span>
+            </li>
+          {/each}
+        </ul>
+        <div class="flex gap-2">
+          {#if !selectedShow.venueId}
+            <button onclick={() => (editingShow = true)} class="flex-1 text-sm font-medium px-4 py-2 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 transition-colors">
+              Edit
+            </button>
+          {/if}
+          <button onclick={handleDelete} class="flex-1 text-sm font-medium px-4 py-2 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 transition-colors">
+            Delete
+          </button>
+          <button onclick={() => selectedShow = null} class="flex-1 text-sm font-medium px-4 py-2 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
+            Close
+          </button>
+        </div>
       {/if}
-      <h1 class="text-3xl font-bold">Schedule</h1>
-      <ul class="flex flex-col divide-y divide-surface-700">
-        {#each Object.entries(selectedShow.schedule) as [key, value]}
-          <li class="flex items-center justify-between py-3">
-            <span class="text-surface-400 capitalize">{key.replaceAll('_', ' ')}</span>
-            <span class="font-mono font-semibold text-surface-100">{value}</span>
-          </li>
-        {/each}
-      </ul>
-      <button onclick={() => selectedShow = null} class="w-full text-sm font-medium px-4 py-2 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
-        Close
-      </button>
     </div>
   </div>
 {/if}

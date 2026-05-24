@@ -10,6 +10,17 @@ export function findArtistByEmail (email) {
     `).get(email);
 }
 
+export function updateArtist (artistId, data) {
+  const { name, bio, contactEmail } = data;
+  return db.prepare(`
+    UPDATE artist SET artist_name = ?, bio = ?, contact_email = ? WHERE artist_id = ?
+  `).run(name, bio, contactEmail, artistId);
+}
+
+export function deleteArtistById (artistId) {
+  return db.prepare(`DELETE FROM artist WHERE artist_id = ?`).run(artistId);
+}
+
 export function createArtist (artistData) {
   const { artistName, bio, contactEmail } = artistData;
 

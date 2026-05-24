@@ -1,7 +1,22 @@
 <script>
   import { formatDateLong as formatDate, statusClass } from '../../util/showUtil.js';
+  import { fetchPost } from '../../util/fetchUtil.js';
 
   let { entity: venue, shows, riders: techSpecs, onNavigate } = $props();
+
+  let showSpecForm = $state(false);
+  let newSpecName = $state('');
+  let newSpecUrl = $state('');
+
+  async function addTechSpec() {
+    const res = await fetchPost('/api/riders', { riderName: newSpecName, riderUrl: newSpecUrl });
+    if (res?.ok) {
+      techSpecs.push({ name: newSpecName, url: newSpecUrl });
+      newSpecName = '';
+      newSpecUrl = '';
+      showSpecForm = false;
+    }
+  }
 
   const confirmed = $derived(shows.filter(show => show.status === 'confirmed'));
   const pending = $derived(shows.filter(show => show.status === 'pending'));
@@ -25,7 +40,6 @@
     </div>
   </div>
 
-  <!-- Next Event -->
   <div class="card p-6 border border-blue-500/30 col-span-2">
     <h2 class="text-base font-semibold text-surface-300 mb-4">Next Event</h2>
     {#if nextShow}
@@ -39,7 +53,7 @@
         </div>
       </div>
       <ul class="flex flex-col divide-y divide-surface-700 mt-5">
-        {#each Object.entries(nextShow.schedule) as [key, value]}
+        {#each Object.entries(nextShow.schedule) as [key, value] (key)}
           <li class="flex items-center justify-between py-3">
             <span class="text-surface-400 capitalize">{key.replace(/_/g, ' ')}</span>
             <span class="font-mono text-lg font-semibold text-surface-100">{value}</span>
@@ -58,7 +72,7 @@
     </h2>
     {#if confirmed.length > 0}
       <div class="flex flex-col">
-        {#each confirmed.slice(0, 4) as show, i}
+        {#each confirmed.slice(0, 4) as show, i (show.show_id)}
           <div class="py-3 {i !== 0 ? 'border-t border-surface-700' : ''}">
             <p class="font-medium text-sm truncate">{show.event_name}</p>
             <p class="text-xs text-surface-400 mt-0.5">{formatDate(show.date)}{show.artist_name ? ` — ${show.artist_name}` : ''}</p>
@@ -78,7 +92,7 @@
     </h2>
     {#if pending.length > 0}
       <div class="flex flex-col">
-        {#each pending.slice(0, 4) as booking, i}
+        {#each pending.slice(0, 4) as booking, i (booking.show_id)}
           <div class="py-3 {i !== 0 ? 'border-t border-surface-700' : ''}">
             <div class="flex items-center justify-between gap-2">
               <p class="font-medium text-sm truncate">{booking.artist_name}</p>
@@ -99,10 +113,22 @@
   <div class="card p-6 border border-surface-700 col-span-2">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-base font-semibold text-surface-300">Tech Specs</h2>
+      <button onclick={() => (showSpecForm = !showSpecForm)} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
+        Add Tech Spec
+      </button>
     </div>
+    {#if showSpecForm}
+      <div class="flex gap-2 mb-4">
+        <input bind:value={newSpecName} placeholder="Spec name" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
+        <input bind:value={newSpecUrl} placeholder="Document URL" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
+        <button onclick={addTechSpec} class="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 transition-colors">
+          Save
+        </button>
+      </div>
+    {/if}
     {#if techSpecs.length > 0}
       <ul class="flex flex-col divide-y divide-surface-700">
-        {#each techSpecs as spec}
+        {#each techSpecs as spec, i (i)}
           <li>
             <a
               href={spec.url}

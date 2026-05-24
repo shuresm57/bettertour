@@ -1,13 +1,17 @@
 <script>
   import ShowDatePicker from './ShowDatePicker.svelte';
 
-  let { onSubmit, artistEmailField = false } = $props();
+  let { onSubmit, artistEmailField = false, initialData = null } = $props();
 
-  let newEventName = $state('');
-  let newDate = $state('');
-  let newContact = $state('');
+  let newEventName = $state(initialData?.event_name ?? '');
+  let newDate = $state(initialData?.date ?? '');
+  let newContact = $state(initialData?.contact_of_day ?? '');
   let newArtistEmail = $state('');
-  let scheduleEntries = $state([{ key: '', value: '' }]);
+  let scheduleEntries = $state(
+    initialData?.schedule && Object.keys(initialData.schedule).length > 0
+      ? Object.entries(initialData.schedule).map(([key, value]) => ({ key, value }))
+      : [{ key: '', value: '' }]
+  );
 
   function buildSchedule() {
     const schedule = {};

@@ -2,6 +2,7 @@
   import Dashboard from '../../components/Dashboard.svelte';
   import Overview from './Overview.svelte';
   import Shows from './Shows.svelte';
+  import Profile from './Profile.svelte';
 </script>
 
 <Dashboard
@@ -11,4 +12,5 @@
   ridersKey="riders"
   {Overview}
   {Shows}
+  {Profile}
 />

@@ -1,5 +1,9 @@
 import db from '../connection.js';
 
+export function deleteShow (showId) {
+  return db.prepare(`DELETE FROM show WHERE show_id = ?`).run(showId);
+}
+
 export function updateShow (showId, showData) {
   const { date, schedule, eventName, contactOfDay, status } = showData;
 

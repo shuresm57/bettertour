@@ -5,7 +5,8 @@
 
   const navItems = [
     { id: 'overview', label: 'Overview' },
-    { id: 'shows', label: 'Shows' }
+    { id: 'shows', label: 'Shows' },
+    { id: 'profile', label: 'Profile' }
   ];
 </script>
 

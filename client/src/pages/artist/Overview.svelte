@@ -1,7 +1,22 @@
 <script>
   import { formatDateLong as formatDate, statusClass } from '../../util/showUtil.js';
+  import { fetchPost } from '../../util/fetchUtil.js';
 
   let { entity: artist, shows, riders } = $props();
+
+  let showRiderForm = $state(false);
+  let newRiderName = $state('');
+  let newRiderUrl = $state('');
+
+  async function addRider() {
+    const res = await fetchPost('/api/riders', { riderName: newRiderName, riderUrl: newRiderUrl });
+    if (res?.ok) {
+      riders.push({ name: newRiderName, url: newRiderUrl });
+      newRiderName = '';
+      newRiderUrl = '';
+      showRiderForm = false;
+    }
+  }
 
   const confirmed = $derived(shows.filter(show => show.status === 'confirmed'));
   const pending = $derived(shows.filter(show => show.status === 'pending'));
@@ -101,10 +116,19 @@
   <div class="card p-6 border border-surface-700 col-span-2">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-base font-semibold text-surface-300">Riders</h2>
-      <button class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
+      <button onclick={() => (showRiderForm = !showRiderForm)} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
         Add Rider
       </button>
     </div>
+    {#if showRiderForm}
+      <div class="flex gap-2 mb-4">
+        <input bind:value={newRiderName} placeholder="Rider name" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
+        <input bind:value={newRiderUrl} placeholder="Document URL" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
+        <button onclick={addRider} class="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 transition-colors">
+          Save
+        </button>
+      </div>
+    {/if}
     {#if riders.length > 0}
       <ul class="flex flex-col divide-y divide-surface-700">
         {#each riders as rider}

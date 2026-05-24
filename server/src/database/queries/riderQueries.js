@@ -16,6 +16,14 @@ export function getVenueRider (venueId) {
     `).all(venueId);
 }
 
+export function deleteRidersByArtistId (artistId) {
+  return db.prepare(`DELETE FROM rider WHERE artist_id = ?`).run(artistId);
+}
+
+export function deleteRidersByVenueId (venueId) {
+  return db.prepare(`DELETE FROM rider WHERE venue_id = ?`).run(venueId);
+}
+
 export function createArtistRider (artistRiderData) {
   const { artistId, riderName, riderUrl } = artistRiderData;
 

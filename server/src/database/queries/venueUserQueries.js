@@ -1,5 +1,9 @@
 import db from '../connection.js';
 
+export function deleteVenueUser (venueId) {
+  return db.prepare(`DELETE FROM venue_user WHERE venue_id = ?`).run(venueId);
+}
+
 export function createVenueUser (venueUserData) {
   const { venueId, userId, role } = venueUserData;
 

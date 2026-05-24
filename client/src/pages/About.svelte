@@ -69,9 +69,4 @@
     </div>
     <img src={imgSrcTwo} class="rounded-lg w-180 h-180 object-cover" alt="about" />
   </div>
-
-  <div class="max-w-3xl mx-auto mt-24">
-    <h3 class="text-4xl mb-6">Cookie Declaration</h3>
-    <script id="CookieDeclaration" src="https://consent.cookiebot.com/1e249c05-5546-4371-8751-26df18fa7271/cd.js" type="text/javascript" async></script>
-  </div>
 </div>
