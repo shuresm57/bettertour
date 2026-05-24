@@ -1,22 +1,8 @@
 <script>
   import { formatDateLong as formatDate, statusClass } from '../../util/showUtil.js';
-  import { fetchPost } from '../../util/fetchUtil.js';
+  import Riders from '../../components/Riders.svelte';
 
   let { entity: venue, shows, riders: techSpecs, onNavigate } = $props();
-
-  let showSpecForm = $state(false);
-  let newSpecName = $state('');
-  let newSpecUrl = $state('');
-
-  async function addTechSpec() {
-    const res = await fetchPost('/api/riders', { riderName: newSpecName, riderUrl: newSpecUrl });
-    if (res?.ok) {
-      techSpecs.push({ name: newSpecName, url: newSpecUrl });
-      newSpecName = '';
-      newSpecUrl = '';
-      showSpecForm = false;
-    }
-  }
 
   const confirmed = $derived(shows.filter(show => show.status === 'confirmed'));
   const pending = $derived(shows.filter(show => show.status === 'pending'));
@@ -109,41 +95,8 @@
     {/if}
   </div>
 
-  <!-- Tech Specs -->
-  <div class="card p-6 border border-surface-700 col-span-2">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-base font-semibold text-surface-300">Tech Specs</h2>
-      <button onclick={() => (showSpecForm = !showSpecForm)} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
-        Add Tech Spec
-      </button>
-    </div>
-    {#if showSpecForm}
-      <div class="flex gap-2 mb-4">
-        <input bind:value={newSpecName} placeholder="Spec name" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
-        <input bind:value={newSpecUrl} placeholder="Document URL" class="input text-sm px-3 py-1.5 rounded-lg flex-1" />
-        <button onclick={addTechSpec} class="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 transition-colors">
-          Save
-        </button>
-      </div>
-    {/if}
-    {#if techSpecs.length > 0}
-      <ul class="flex flex-col divide-y divide-surface-700">
-        {#each techSpecs as spec, i (i)}
-          <li>
-            <a
-              href={spec.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center justify-between py-3 group"
-            >
-              <span class="font-medium group-hover:text-blue-400 transition-colors">{spec.name}</span>
-            </a>
-          </li>
-        {/each}
-      </ul>
-    {:else}
-      <p class="text-sm text-surface-500">No tech specs uploaded yet.</p>
-    {/if}
+  <div class="col-span-2">
+    <Riders riders={techSpecs} />
   </div>
 
 </div>

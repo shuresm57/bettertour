@@ -1,5 +1,5 @@
 <script>
-    import { handleResetPassword } from '../util/authService.svelte.js';
+    import { handleResetPassword } from '../../util/authService.svelte.js';
 
     const token = new URLSearchParams(window.location.search).get('token');
 

@@ -1,6 +1,6 @@
 <script>
   import { Tabs } from '@skeletonlabs/skeleton-svelte';
-  import { handleLogin, handleSignup, handlePasswordRecovery } from '../util/authService.svelte.js';
+  import { handleLogin, handleSignup, handlePasswordRecovery } from '../../util/authService.svelte.js';
 
   let view = $state('login');
 

@@ -1,6 +1,6 @@
   <script>
   import { toast } from 'svelte-sonner';
-  import { fetchPost } from '../util/fetchUtil.js';
+  import { fetchPost } from '../../util/fetchUtil.js';
 
   let name = $state('');
   let email = $state('');

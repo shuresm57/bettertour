@@ -4,7 +4,7 @@ import { requireArtist, requireVenue } from '../middleware/requireRole.js';
 import { findByEmail, findArtistByUserId, findVenueByUserId, deleteUserById, updateUserPassword } from '../database/queries/userQueries.js';
 import { getShowsByArtistId, getShowsWithArtistsByVenueId, createShow, updateShow, deleteShow } from '../database/queries/showQueries.js';
 import { createShowParticipant, getShowParticipants, deleteShowParticipants, deleteShowParticipantsByArtist, deleteShowParticipantsByVenue, deleteOrphanedShows } from '../database/queries/showParticipantQueries.js';
-import { getArtistRider, getVenueRider, createArtistRider, createVenueRider, deleteRidersByArtistId, deleteRidersByVenueId } from '../database/queries/riderQueries.js';
+import { getArtistRider, getVenueRider, createArtistRider, createVenueRider, deleteRidersByArtistId, deleteRidersByVenueId, deleteRiderById } from '../database/queries/riderQueries.js';
 import { updateArtist, deleteArtistById } from '../database/queries/artistQueries.js';
 import { updateVenue, deleteVenueById } from '../database/queries/venueQueries.js';
 import { deleteArtistUser } from '../database/queries/artistUserQueries.js';
@@ -53,18 +53,36 @@ router.get('/api/venue/dashboard', requireAuth, requireVenue, (req, res) => {
 router.post('/api/riders', requireAuth, (req, res) => {
   const { riderName, riderUrl } = req.body;
   const user = findByEmail(req.user.email);
+  let riderId;
 
   if (req.user.type === 'artist') {
     const artist = findArtistByUserId(user.user_id);
     if (!artist) return res.status(403).send({ errorMessage: 'Not an artist account' });
-    createArtistRider({ artistId: artist.artist_id, riderName, riderUrl });
+    riderId = createArtistRider({ artistId: artist.artist_id, riderName, riderUrl }).lastInsertRowid;
   } else {
     const venue = findVenueByUserId(user.user_id);
     if (!venue) return res.status(403).send({ errorMessage: 'Not a venue account' });
-    createVenueRider({ venueId: venue.venue_id, riderName, riderUrl });
+    riderId = createVenueRider({ venueId: venue.venue_id, riderName, riderUrl }).lastInsertRowid;
   }
 
-  res.status(201).send({ data: { riderName, riderUrl } });
+  res.status(201).send({ data: { id: riderId, riderName, riderUrl } });
+});
+
+router.delete('/api/riders/:riderId', requireAuth, (req, res) => {
+  const riderId = parseInt(req.params.riderId);
+  const user = findByEmail(req.user.email);
+
+  if (req.user.type === 'artist') {
+    const artist = findArtistByUserId(user.user_id);
+    if (!artist) return res.status(403).send({ errorMessage: 'Not an artist account' });
+    deleteRiderById(riderId, artist.artist_id, null);
+  } else {
+    const venue = findVenueByUserId(user.user_id);
+    if (!venue) return res.status(403).send({ errorMessage: 'Not a venue account' });
+    deleteRiderById(riderId, null, venue.venue_id);
+  }
+
+  res.send({ data: { riderId } });
 });
 
 router.post('/api/artist/shows', requireAuth, requireArtist, (req, res) => {

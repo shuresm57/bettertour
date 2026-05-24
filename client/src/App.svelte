@@ -3,13 +3,13 @@
   import { Toaster } from 'svelte-sonner';
   
   import Navbar from './components/Navbar.svelte'
-  import LandingPage from './pages/LandingPage.svelte'
-  import About from './pages/About.svelte'
-  import Contact from './pages/Contact.svelte'
+  import LandingPage from './pages/_site/LandingPage.svelte'
+  import About from './pages/_site/About.svelte'
+  import Contact from './pages/_site/Contact.svelte'
   import Footer from './components/Footer.svelte'
-  import Login from './pages/Login.svelte'
-  import ResetPassword from './pages/ResetPassword.svelte'
-  import PrivacyPolicy from './pages/PrivacyPolicy.svelte'
+  import Login from './pages/_site/Login.svelte'
+  import ResetPassword from './pages/_site/ResetPassword.svelte'
+  import PrivacyPolicy from './pages/_site/PrivacyPolicy.svelte'
   import PrivateRoute from './components/PrivateRoute.svelte';
   import ArtistDashboard from './pages/artist/ArtistDashboard.svelte';
   import VenueDashboard from './pages/venue/VenueDashboard.svelte';

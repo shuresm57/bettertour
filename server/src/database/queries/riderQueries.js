@@ -2,7 +2,7 @@ import db from '../connection.js';
 
 export function getArtistRider (artistId) {
   return db.prepare(`
-        SELECT rider_name AS name, rider_url AS url
+        SELECT rider_id AS id, rider_name AS name, rider_url AS url
         FROM rider
         WHERE artist_id = ?
     `).all(artistId);
@@ -10,10 +10,17 @@ export function getArtistRider (artistId) {
 
 export function getVenueRider (venueId) {
   return db.prepare(`
-        SELECT rider_name AS name, rider_url AS url
+        SELECT rider_id AS id, rider_name AS name, rider_url AS url
         FROM rider
         WHERE venue_id = ?
     `).all(venueId);
+}
+
+export function deleteRiderById (riderId, artistId, venueId) {
+  if (artistId) {
+    return db.prepare(`DELETE FROM rider WHERE rider_id = ? AND artist_id = ?`).run(riderId, artistId);
+  }
+  return db.prepare(`DELETE FROM rider WHERE rider_id = ? AND venue_id = ?`).run(riderId, venueId);
 }
 
 export function deleteRidersByArtistId (artistId) {

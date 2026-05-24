@@ -1,5 +1,5 @@
 <script>
-  import { fetchPost } from '../../util/fetchUtil.js';
+  import { fetchPost, fetchDelete } from '../util/fetchUtil.js';
 
   let { riders: initialRiders } = $props();
   let riders = $state([...initialRiders]);
@@ -11,10 +11,19 @@
     const res = await fetchPost('/api/riders', { riderName: newName, riderUrl: newUrl });
 
     if (res?.ok) {
-      riders.push({ name: newName, url: newUrl });
+      const { id } = (await res.json()).data;
+      riders.push({ id, name: newName, url: newUrl });
       newName = '';
       newUrl = '';
       showForm = false;
+    }
+  }
+
+  async function deleteRider(rider) {
+    const res = await fetchDelete(`/api/riders/${rider.id}`);
+
+    if (res?.ok) {
+      riders = riders.filter((r) => r.id !== rider.id);
     }
   }
 </script>
@@ -43,15 +52,19 @@
   {#if riders.length > 0}
     <ul class="flex flex-col divide-y divide-surface-700">
       {#each riders as rider}
-        <li>
+        <li class="flex items-center justify-between py-4 group">
           <a
             href={rider.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between py-4 group"
+            class="font-medium group-hover:text-blue-400 transition-colors"
+          >{rider.name}</a>
+          <button
+            onclick={() => deleteRider(rider)}
+            class="text-xs font-medium px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
           >
-            <span class="font-medium group-hover:text-blue-400 transition-colors">{rider.name}</span>
-          </a>
+            Delete
+          </button>
         </li>
       {/each}
     </ul>
