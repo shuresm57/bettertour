@@ -21,29 +21,25 @@ router.post('/api/register', authLimiter, async (req, res) => {
     return res.status(400).send({ errorMessage: 'Email, password, name and type are required.' });
   }
 
-  try {
-    const existingUser = findByEmail(email);
-    if (existingUser) {
-      return res.status(400).send({ errorMessage: 'User already exists.' });
-    }
-
-    const hashedPassword = await hashPassword(password);
-    const userId = uuidv7();
-    saveUser(userId, email, hashedPassword);
-
-    if (type === 'artist') {
-      const result = createArtist({ artistName: name, bio: '', contactEmail: email });
-      createArtistUser({ artistId: result.lastInsertRowid, userId, role: 'member' });
-    } else {
-      const result = createVenue({ venueName: name, address: '', bio: '', contactEmail: email });
-      createVenueUser({ venueId: result.lastInsertRowid, userId, role: 'member' });
-    }
-
-    sendWelcomeEmail(email, email);
-    res.status(201).send({ data: 'User registered successfully.' });
-  } catch {
-    res.status(500).send({ errorMessage: 'Error registering user.' });
+  const existingUser = findByEmail(email);
+  if (existingUser) {
+    return res.status(400).send({ errorMessage: 'User already exists.' });
   }
+
+  const hashedPassword = await hashPassword(password);
+  const userId = uuidv7();
+  saveUser(userId, email, hashedPassword);
+
+  if (type === 'artist') {
+    const result = createArtist({ artistName: name, bio: '', contactEmail: email });
+    createArtistUser({ artistId: result.lastInsertRowid, userId, role: 'member' });
+  } else {
+    const result = createVenue({ venueName: name, address: '', bio: '', contactEmail: email });
+    createVenueUser({ venueId: result.lastInsertRowid, userId, role: 'member' });
+  }
+
+  sendWelcomeEmail(email, email);
+  res.status(201).send({ data: 'User registered successfully.' });
 });
 
 router.post('/api/login', authLimiter, async (req, res) => {

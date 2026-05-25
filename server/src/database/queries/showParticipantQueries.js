@@ -29,7 +29,7 @@ export function deleteShowParticipants (showId) {
 
 export function getShowParticipants (showId) {
   return db.prepare(`
-    SELECT sp.role, sp.artist_id, sp.venue_id, sp.joined_at, u.email, a.artist_name, v.venue_name
+    SELECT sp.role, sp.user_id, sp.artist_id, sp.venue_id, sp.joined_at, u.email, a.artist_name, v.venue_name
     FROM show_participant sp
     JOIN user u ON sp.user_id = u.user_id
     LEFT JOIN artist a ON sp.artist_id = a.artist_id

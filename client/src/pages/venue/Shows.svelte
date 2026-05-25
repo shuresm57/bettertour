@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import io from 'socket.io-client';
   import { toast } from 'svelte-sonner';
   import ShowForm from '../../components/ShowForm.svelte';
@@ -29,6 +29,7 @@
 
     socket.on('server-creates-show', (data) => {
       shows = [...shows, data];
+      toast.success('Show request sent to artist.');
     });
 
     socket.on('server-sends-acceptance', (data) => {
@@ -38,8 +39,14 @@
     });
   });
 
+  onDestroy(() => {
+      socket.disconnect();
+  });
+  
   async function handleSubmit(formData) {
-    if (!formData) { showForm = false; return; }
+    if (!formData) {
+      showForm = false; return;
+    }
     const showData = {
       event_name: formData.event_name,
       date: formData.date,
@@ -57,7 +64,9 @@
   }
 
   async function handleEdit(formData) {
-    if (!formData) { editingShow = false; return; }
+    if (!formData) {
+      editingShow = false; return;
+    }
     const res = await fetchPut(`/api/shows/${selectedShow.show_id}`, {
       event_name: formData.event_name,
       date: formData.date,
@@ -70,6 +79,14 @@
       shows = shows.map(s => s.show_id === selectedShow.show_id ? updated : s);
       selectedShow = updated;
       editingShow = false;
+      socket.emit('venue-updates-show', {
+        show_id: selectedShow.show_id,
+        event_name: updated.event_name,
+        date: updated.date,
+        contact_of_day: updated.contact_of_day,
+        schedule: updated.schedule,
+        status: updated.status
+      });
     }
   }
 

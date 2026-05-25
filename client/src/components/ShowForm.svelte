@@ -29,11 +29,6 @@
       schedule: buildSchedule(),
       artistEmail: newArtistEmail || null
     });
-    newEventName = '';
-    newDate = '';
-    newContact = '';
-    newArtistEmail = '';
-    scheduleEntries = [{ key: '', value: '' }];
   }
 </script>
 

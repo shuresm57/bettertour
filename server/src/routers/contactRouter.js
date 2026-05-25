@@ -13,9 +13,9 @@ router.post('/api/contact', generalLimiter, async (req, res) => {
 
   try {
     await sendContactEmail(name, email, message);
-    res.status(200).send('Message sent.');
+    res.status(200).send({ errorMessage: 'Message sent.' });
   } catch {
-    res.status(500).send('Failed to send message.');
+    res.status(500).send({ errorMessage: 'Failed to send message.' });
   }
 });
 

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { findArtistByEmail } from '../database/queries/artistQueries.js';
 import { findVenueByUserId } from '../database/queries/userQueries.js';
 import { createShow, updateShowStatus } from '../database/queries/showQueries.js';
-import { createShowParticipant } from '../database/queries/showParticipantQueries.js';
+import { createShowParticipant, getShowParticipants } from '../database/queries/showParticipantQueries.js';
 
 export function registerShowSocket (io) {
   io.use((socket, next) => {
@@ -66,6 +66,13 @@ export function registerShowSocket (io) {
       updateShowStatus(data.show_id, 'confirmed');
       io.to(data.venueId).emit('server-sends-acceptance', data);
       socket.emit('server-sends-acceptance', data);
+    });
+
+    socket.on('venue-updates-show', (data) => {
+      const participants = getShowParticipants(data.show_id);
+      const artistParticipant = participants.find(p => p.role === 'artist');
+      if (!artistParticipant) return;
+      io.to(artistParticipant.user_id).emit('server-sends-show-update', data);
     });
 
     socket.on('disconnect', () => {

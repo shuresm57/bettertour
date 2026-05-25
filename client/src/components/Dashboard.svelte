@@ -19,6 +19,7 @@
       riders = data[ridersKey] ?? [];
     }
   });
+  
 </script>
 
 <svelte:head>
