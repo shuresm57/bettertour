@@ -1,5 +1,5 @@
 <script>
-  import { handleLogout } from '../services/authService.js';
+  import { handleLogout } from '../../services/authService.js';
 
   let { activeSection, onNavigate } = $props();
 

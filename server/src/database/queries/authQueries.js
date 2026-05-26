@@ -16,6 +16,7 @@ export function findUserByToken (token, date) {
     `).get(token, date);
 }
 
+
 export function updateUserAndToken (hashed, id) {
   return db.prepare(`
     UPDATE user

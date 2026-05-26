@@ -36,9 +36,6 @@ app.use(authRouter);
 import userRouter from './routers/userRouter.js';
 app.use(userRouter);
 
-import showRouter from './routers/showRouter.js';
-app.use(showRouter);
-
 import riderRouter from './routers/riderRouter.js';
 app.use(riderRouter);
 
@@ -48,9 +45,12 @@ app.use(profileRouter);
 import contactRouter from './routers/contactRouter.js';
 app.use(contactRouter);
 
-//======================================== 
+import showRouter from './routers/showRouter.js';
+app.use(showRouter);
+
+//========================================
 //                Static
-//======================================== 
+//========================================
 
 import path from 'path';
 
@@ -88,4 +88,13 @@ const PORT = process.env.PORT ?? DEFAULT_PORT;
 
 server.listen(PORT, () => {
   console.log('Server running on port', PORT);
+});
+
+
+process.once('SIGUSR2', function () {
+  process.kill(process.pid, 'SIGUSR2');
+});
+
+process.on('SIGINT', function () {
+  process.kill(process.pid, 'SIGINT');
 });

@@ -57,47 +57,55 @@ export function createShowRequest (venueUserId, artistEmail, showData) {
   addVenueToShow(showId, venueUserId, venue.venue_id);
   addArtistToShow(showId, artist.user_id, artist.artist_id);
 
-  return { showId, artist };
+  const payload = {
+    show_id: showId,
+    event_name: showData.event_name,
+    date: showData.date,
+    contact_of_day: showData.contact_of_day,
+    schedule: showData.schedule,
+    status: 'pending',
+    venueId: venueUserId,
+    artistUserId: artist.user_id,
+    artist_name: artist.artist_name
+  };
+
+  return payload;
 }
 
 export function updateShowAsArtist (showId, artistId, showData) {
   const participants = getShowParticipants(showId);
-  const isParticipant = participants.some(p => p.artist_id === artistId);
-  const hasVenue = participants.some(p => p.role === 'venue');
+  const isParticipant = participants.some(participant => participant.artist_id === artistId);
+  const hasVenue = participants.some(participant => participant.role === 'venue');
   if (!isParticipant || hasVenue) {
     return { error: 'forbidden' };
   }
   updateShow(showId, buildShowData(showData));
-  return { success: true };
 }
 
 export function updateShowAsVenue (showId, venueId, showData) {
   const participants = getShowParticipants(showId);
-  if (!participants.some(p => p.venue_id === venueId)) {
+  if (!participants.some(participant => participant.venue_id === venueId)) {
     return { error: 'forbidden' };
   }
   updateShow(showId, buildShowData(showData));
-  return { success: true };
 }
 
 export function deleteShowAsArtist (showId, artistId) {
   const participants = getShowParticipants(showId);
-  if (!participants.some(p => p.artist_id === artistId)) {
+  if (!participants.some(participant => participant.artist_id === artistId)) {
     return { error: 'forbidden' };
   }
   deleteShowParticipants(showId);
   deleteShow(showId);
-  return { success: true };
 }
 
 export function deleteShowAsVenue (showId, venueId) {
   const participants = getShowParticipants(showId);
-  if (!participants.some(p => p.venue_id === venueId)) {
+  if (!participants.some(participant => participant.venue_id === venueId)) {
     return { error: 'forbidden' };
   }
   deleteShowParticipants(showId);
   deleteShow(showId);
-  return { success: true };
 }
 
 export function acceptShow (showId) {
@@ -106,5 +114,10 @@ export function acceptShow (showId) {
 
 export function getArtistUserIdForShow (showId) {
   const participants = getShowParticipants(showId);
-  return participants.find(p => p.role === 'artist')?.user_id ?? null;
+  return participants.find(participant => participant.role === 'artist')?.user_id ?? null;
+}
+
+export function getVenueUserIdForShow (showId) {
+  const participants = getShowParticipants(showId);
+  return participants.find(participant => participant.role === 'venue')?.user_id ?? null;
 }

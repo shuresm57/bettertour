@@ -28,13 +28,13 @@
     });
 
     socket.on('server-sends-acceptance', (data) => {
-      const show = shows.find(show => show.show_id === data.show_id);
-      shows = shows.map(s => s.show_id === data.show_id ? { ...s, status: 'confirmed' } : s);
-      if (show) toast.success(`${show.event_name ?? 'Show'} confirmed!`);
+      shows = shows.map(show => show.show_id === data.show_id ? { ...show, status: 'confirmed' } : show);
+      if (selectedShow?.show_id === data.show_id) selectedShow = { ...selectedShow, status: 'confirmed' };
+      toast.success('Show confirmed!');
     });
 
     socket.on('server-sends-show-update', (data) => {
-      shows = shows.map(s => s.show_id === data.show_id ? { ...s, ...data } : s);
+      shows = shows.map(show => show.show_id === data.show_id ? { ...show, ...data } : show);
       if (selectedShow?.show_id === data.show_id) selectedShow = { ...selectedShow, ...data };
       toast.info(`${data.event_name ?? 'Show'} was updated.`);
     });
@@ -64,11 +64,7 @@
   }
 
   function acceptShow(show) {
-    socket.emit('artist-accepts-show', {
-      venueId: show.venueId,
-      artistId: userStore.user.userId,
-      show_id: show.show_id
-    });
+    socket.emit('artist-accepts-show', { venueId: show.venueId, show_id: show.show_id });
   }
 
   async function handleEdit(formData) {
@@ -84,7 +80,7 @@
     });
     if (res?.ok) {
       const updated = { ...selectedShow, event_name: formData.event_name, date: formData.date, contact_of_day: formData.contact_of_day, schedule: formData.schedule };
-      shows = shows.map(s => s.show_id === selectedShow.show_id ? updated : s);
+      shows = shows.map(show => show.show_id === selectedShow.show_id ? updated : show);
       selectedShow = updated;
       editingShow = false;
     }
@@ -93,7 +89,7 @@
   async function handleDelete() {
     const res = await fetchDelete(`/api/artist/shows/${selectedShow.show_id}`);
     if (res?.ok) {
-      shows = shows.filter(s => s.show_id !== selectedShow.show_id);
+      shows = shows.filter(show => show.show_id !== selectedShow.show_id);
       selectedShow = null;
     }
   }

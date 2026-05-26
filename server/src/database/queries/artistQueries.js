@@ -22,6 +22,7 @@ export function deleteArtistById (artistId) {
 }
 
 export function createArtist (artistData) {
+  
   const { artistName, bio, contactEmail } = artistData;
 
   return db.prepare(`

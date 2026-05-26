@@ -1,5 +1,5 @@
 import { socketAuth } from '../middleware/socketAuth.js';
-import { createShowRequest, acceptShow, getArtistUserIdForShow } from '../services/showService.js';
+import { createShowRequest, acceptShow, getArtistUserIdForShow, getVenueUserIdForShow } from '../services/showService.js';
 
 export function registerShowSocket (io) {
   io.use(socketAuth);
@@ -10,38 +10,29 @@ export function registerShowSocket (io) {
     });
 
     socket.on('venue-sends-show-request', (data) => {
-      const result = createShowRequest(data.venueId, data.artistEmail, data);
-      if (!result) {
-        return;
-      }
-
-      const showPayload = {
-        show_id: result.showId,
+      const payload = createShowRequest(data.venueId, data.artistEmail, {
         event_name: data.event_name,
         date: data.date,
         contact_of_day: data.contact_of_day,
-        schedule: data.schedule,
-        status: 'pending',
-        venueId: data.venueId,
-        artistUserId: result.artist.user_id,
-        artist_name: result.artist.artist_name
-      };
-
-      io.to(result.artist.user_id).emit('server-sends-show-request', showPayload);
-      socket.emit('server-creates-show', showPayload);
+        schedule: data.schedule
+      });
+      if (!payload) return;
+      io.to(payload.artistUserId).emit('server-sends-show-request', payload);
+      socket.emit('server-creates-show', payload);
     });
 
     socket.on('artist-accepts-show', (data) => {
+      const venueUserId = getVenueUserIdForShow(data.show_id);
       acceptShow(data.show_id);
-      io.to(data.venueId).emit('server-sends-acceptance', data);
-      socket.emit('server-sends-acceptance', data);
+      if (venueUserId) {
+        io.to(venueUserId).emit('server-sends-acceptance', { show_id: data.show_id });
+      }
+      socket.emit('server-sends-acceptance', { show_id: data.show_id });
     });
 
     socket.on('venue-updates-show', (data) => {
       const artistUserId = getArtistUserIdForShow(data.show_id);
-      if (!artistUserId) {
-        return;
-      }
+      if (!artistUserId) return;
       io.to(artistUserId).emit('server-sends-show-update', data);
     });
   });

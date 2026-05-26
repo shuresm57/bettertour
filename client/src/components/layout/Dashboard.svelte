@@ -9,6 +9,7 @@
   let entity = $state(null);
   let shows = $state([]);
   let riders = $state([]);
+  let loaded = $state(false);
 
   function parseShow (show) {
     return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
@@ -16,11 +17,15 @@
 
   onMount(async () => {
     const res = await fetchGet(apiPath);
-    if (!res?.ok) return;
+    if (!res?.ok) { 
+      loaded = true; 
+      return; 
+    }
     const { data } = await res.json();
     entity = data[entityKey];
     shows = data.shows.map(parseShow);
     riders = data[ridersKey] ?? [];
+    loaded = true;
   });
   
 </script>
@@ -31,7 +36,8 @@
 
 <div class="flex-1">
   <div class="pt-24 px-8 pb-8 max-w-5xl mx-auto">
-    {#if !entity}
+    {#if !loaded}
+    {:else if !entity}
       <p class="text-surface-400">Could not load data.</p>
     {:else if activeSection === 'overview'}
       <Overview {entity} {shows} {riders} />

@@ -13,7 +13,7 @@ router.post('/api/register', authLimiter, async (req, res) => {
   }
 
   const result = await registerUser(email, password, name, type);
-  if (result.error === 'user_exists') {
+  if (result?.error === 'User already exists') {
     return res.status(400).send({ errorMessage: 'User already exists.' });
   }
 
@@ -60,7 +60,7 @@ router.post('/api/logout', (req, res) => {
 router.post('/api/request-reset', authLimiter, (req, res) => {
   const { email } = req.body;
   const result = requestPasswordReset(email);
-  if (result.error === 'not_found') {
+  if (result?.error === 'User not found') {
     return res.status(404).send({ errorMessage: 'No account with that email.' });
   }
   res.status(200).send({ data: 'Reset link sent.' });
@@ -69,7 +69,7 @@ router.post('/api/request-reset', authLimiter, (req, res) => {
 router.post('/api/reset-password', authLimiter, async (req, res) => {
   const { token, newPassword } = req.body;
   const result = await resetPassword(token, newPassword);
-  if (result.error === 'invalid_token') {
+  if (result?.error === 'Invalid token') {
     return res.status(400).send({ errorMessage: 'Invalid or expired token.' });
   }
   res.status(200).send({ data: 'Password reset successfully.' });

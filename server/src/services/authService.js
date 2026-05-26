@@ -11,7 +11,7 @@ import { createVenueUser } from '../database/queries/venueUserQueries.js';
 
 export async function registerUser (email, password, name, type) {
   if (findByEmail(email)) {
-    return { error: 'user_exists' };
+    return { error: 'User already exists' };
   }
 
   const hashedPassword = await hashPassword(password);
@@ -31,8 +31,6 @@ export async function registerUser (email, password, name, type) {
   } catch (error) {
     console.error('Failed to send welcome email:', error);
   }
-
-  return { success: true };
 }
 
 export async function loginUser (email, password) {
@@ -53,25 +51,21 @@ export async function loginUser (email, password) {
 export function requestPasswordReset (email) {
   const user = findByEmail(email);
   if (!user) {
-    return { error: 'not_found' };
+    return { error: 'User not found' };
   }
 
   const token = crypto.randomUUID();
   const expiry = Date.now() + 15 * 60 * 1000;
   setExpiryTokenByEmail(token, expiry, email);
   sendPasswordRecoveryEmail(email, user.email, `${process.env.CLIENT_URL}/reset-password?token=${token}`);
-
-  return { success: true };
 }
 
 export async function resetPassword (token, newPassword) {
   const user = findUserByToken(token, Date.now());
   if (!user) {
-    return { error: 'invalid_token' };
+    return { error: 'Invalid token' };
   }
 
   const hashed = await hashPassword(newPassword);
   updateUserAndToken(hashed, user.user_id);
-
-  return { success: true };
 }

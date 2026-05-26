@@ -7,7 +7,7 @@
 
   let name = $state(entity.artist_name ?? '');
   let bio = $state(entity.bio ?? '');
-  
+
   let contactEmail = $state(entity.contact_email ?? '');
 
   let currentPassword = $state('');

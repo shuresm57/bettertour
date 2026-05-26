@@ -15,7 +15,7 @@ router.put('/api/artist/shows/:showId', requireAuth, requireArtist, (req, res) =
   const showId = parseInt(req.params.showId);
   const { event_name, date, contact_of_day, schedule, status } = req.body;
   const result = updateShowAsArtist(showId, req.artist.artist_id, { event_name, date, contact_of_day, schedule, status });
-  if (result.error === 'forbidden') {
+  if (result?.error === 'forbidden') {
     return res.status(403).send({ errorMessage: 'Cannot edit this show' });
   }
   res.send({ data: { show_id: showId, event_name, date, contact_of_day, schedule, status: status ?? 'confirmed' } });
@@ -24,7 +24,7 @@ router.put('/api/artist/shows/:showId', requireAuth, requireArtist, (req, res) =
 router.delete('/api/artist/shows/:showId', requireAuth, requireArtist, (req, res) => {
   const showId = parseInt(req.params.showId);
   const result = deleteShowAsArtist(showId, req.artist.artist_id);
-  if (result.error === 'forbidden') {
+  if (result?.error === 'forbidden') {
     return res.status(403).send({ errorMessage: 'Not your show' });
   }
   res.send({ data: { show_id: showId } });
@@ -40,7 +40,7 @@ router.put('/api/shows/:showId', requireAuth, requireVenue, (req, res) => {
   const showId = parseInt(req.params.showId);
   const { event_name, date, contact_of_day, schedule, status } = req.body;
   const result = updateShowAsVenue(showId, req.venue.venue_id, { event_name, date, contact_of_day, schedule, status });
-  if (result.error === 'forbidden') {
+  if (result?.error === 'forbidden') {
     return res.status(403).send({ errorMessage: 'Not your show' });
   }
   res.send({ data: { show_id: showId, event_name, date, contact_of_day, schedule, status: status ?? 'confirmed' } });
@@ -49,7 +49,7 @@ router.put('/api/shows/:showId', requireAuth, requireVenue, (req, res) => {
 router.delete('/api/shows/:showId', requireAuth, requireVenue, (req, res) => {
   const showId = parseInt(req.params.showId);
   const result = deleteShowAsVenue(showId, req.venue.venue_id);
-  if (result.error === 'forbidden') {
+  if (result?.error === 'forbidden') {
     return res.status(403).send({ errorMessage: 'Not your show' });
   }
   res.send({ data: { show_id: showId } });

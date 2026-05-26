@@ -18,17 +18,16 @@ export function updateVenueProfile (venueId, { name, address, bio, contactEmail 
 export async function changePassword (email, currentPassword, newPassword) {
   const user = findByEmail(email);
   if (!user) {
-    return { error: 'not_found' };
+    return { error: 'User not found' };
   }
 
   const valid = await comparePassword(currentPassword, user.password_hash);
   if (!valid) {
-    return { error: 'wrong_password' };
+    return { error: 'Wrong password' };
   }
 
   const hashed = await hashPassword(newPassword);
   updateUserPassword(user.user_id, hashed);
-  return { success: true };
 }
 
 export function deleteProfile (userId, type) {

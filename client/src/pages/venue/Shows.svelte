@@ -34,7 +34,7 @@
 
     socket.on('server-sends-acceptance', (data) => {
       const show = shows.find(show => show.show_id === data.show_id);
-      shows = shows.map(s => s.show_id === data.show_id ? { ...s, status: 'confirmed' } : s);
+      shows = shows.map(show => show.show_id === data.show_id ? { ...show, status: 'confirmed' } : show);
       if (show) toast.success(`${show.event_name ?? 'Show'} accepted by artist!`);
     });
   });
@@ -80,24 +80,17 @@
     });
     if (res?.ok) {
       const updated = { ...selectedShow, event_name: formData.event_name, date: formData.date, contact_of_day: formData.contact_of_day, schedule: formData.schedule };
-      shows = shows.map(s => s.show_id === selectedShow.show_id ? updated : s);
+      shows = shows.map(show => show.show_id === selectedShow.show_id ? updated : show);
       selectedShow = updated;
       editingShow = false;
-      socket.emit('venue-updates-show', {
-        show_id: selectedShow.show_id,
-        event_name: updated.event_name,
-        date: updated.date,
-        contact_of_day: updated.contact_of_day,
-        schedule: updated.schedule,
-        status: updated.status
-      });
+      socket.emit('venue-updates-show', { show_id: updated.show_id, event_name: formData.event_name, date: formData.date, contact_of_day: formData.contact_of_day, schedule: formData.schedule });
     }
   }
 
   async function handleDelete() {
     const res = await fetchDelete(`/api/shows/${selectedShow.show_id}`);
     if (res?.ok) {
-      shows = shows.filter(s => s.show_id !== selectedShow.show_id);
+      shows = shows.filter(show => show.show_id !== selectedShow.show_id);
       selectedShow = null;
     }
   }

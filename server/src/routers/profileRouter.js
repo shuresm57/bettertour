@@ -20,8 +20,8 @@ router.put('/api/venue/profile', requireAuth, requireVenue, (req, res) => {
 router.put('/api/profile/password', requireAuth, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const result = await changePassword(req.user.email, currentPassword, newPassword);
-  if (result.error === 'not_found') return res.status(404).send({ errorMessage: 'User not found.' });
-  if (result.error === 'wrong_password') return res.status(401).send({ errorMessage: 'Current password is incorrect.' });
+  if (result?.error === 'User not found') return res.status(404).send({ errorMessage: 'User not found.' });
+  if (result?.error === 'Wrong password') return res.status(401).send({ errorMessage: 'Current password is incorrect.' });
   res.send({ data: 'Password updated.' });
 });
 

@@ -2,7 +2,7 @@ import { rateLimit } from 'express-rate-limit';
 
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 50,
+  limit: process.env.PRODUCTION ? 50 : 1000,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   ipv6Subnet: 56,
@@ -10,7 +10,7 @@ export const generalLimiter = rateLimit({
 
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 5,
+  limit: process.env.PRODUCTION ? 10 : 1000,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   ipv6Subnet: 56,
