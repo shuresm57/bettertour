@@ -1,5 +1,5 @@
 <script>
-    import { handleResetPassword } from '../../util/authService.js';
+    import { handleResetPassword } from '../../services/authService.js';
 
     const token = new URLSearchParams(window.location.search).get('token');
 

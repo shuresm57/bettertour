@@ -1,5 +1,3 @@
-<script>
-</script>
 <svelte:head>
     <title>BetterTour | Welcome</title>
 </svelte:head>

@@ -2,7 +2,7 @@
   import { formatDateLong as formatDate, statusClass } from '../../util/showUtil.js';
   import Riders from '../../components/Riders.svelte';
 
-  let { entity: venue, shows, riders: techSpecs, onNavigate } = $props();
+  let { entity: venue, shows, riders: techSpecs } = $props();
 
   const confirmed = $derived(shows.filter(show => show.status === 'confirmed'));
   const pending = $derived(shows.filter(show => show.status === 'pending'));

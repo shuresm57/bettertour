@@ -12,11 +12,15 @@ router.post('/api/riders', requireAuth, (req, res) => {
 
   if (req.user.type === 'artist') {
     const artist = findArtistByUserId(user.user_id);
-    if (!artist) return res.status(403).send({ errorMessage: 'Not an artist account' });
+    if (!artist) {
+      return res.status(403).send({ errorMessage: 'Not an artist account' });
+    }
     riderId = createArtistRider({ artistId: artist.artist_id, riderName, riderUrl }).lastInsertRowid;
   } else {
     const venue = findVenueByUserId(user.user_id);
-    if (!venue) return res.status(403).send({ errorMessage: 'Not a venue account' });
+    if (!venue) {
+      return res.status(403).send({ errorMessage: 'Not a venue account' });
+    }
     riderId = createVenueRider({ venueId: venue.venue_id, riderName, riderUrl }).lastInsertRowid;
   }
 
@@ -29,11 +33,15 @@ router.delete('/api/riders/:riderId', requireAuth, (req, res) => {
 
   if (req.user.type === 'artist') {
     const artist = findArtistByUserId(user.user_id);
-    if (!artist) return res.status(403).send({ errorMessage: 'Not an artist account' });
+    if (!artist) {
+      return res.status(403).send({ errorMessage: 'Not an artist account' });
+    }
     deleteRiderById(riderId, artist.artist_id, null);
   } else {
     const venue = findVenueByUserId(user.user_id);
-    if (!venue) return res.status(403).send({ errorMessage: 'Not a venue account' });
+    if (!venue) {
+      return res.status(403).send({ errorMessage: 'Not a venue account' });
+    }
     deleteRiderById(riderId, null, venue.venue_id);
   }
 

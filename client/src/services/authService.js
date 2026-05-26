@@ -1,5 +1,5 @@
 import { toast } from 'svelte-sonner';
-import { fetchPost, fetchGet } from './fetchUtil.js';
+import { fetchPost, fetchGet } from '../util/fetchUtil.js';
 import { userStore } from '../stores/userStore.svelte.js';
 
 export async function handleSignup (email, passwordOne, passwordTwo, name, type, onSuccess) {
@@ -9,7 +9,7 @@ export async function handleSignup (email, passwordOne, passwordTwo, name, type,
   if (!emailValidityChecker(email)) {
     return;
   }
-  if (!(await checkIfEmailExists(email))) {
+  if (!(await checkIfEmailAvailable(email))) {
     toast.error('Email already in use.');
     return;
   }
@@ -54,7 +54,7 @@ export async function handleLogout () {
 }
 
 export async function handlePasswordRecovery (email, onSuccess) {
-  if (await checkIfEmailExists(email)) {
+  if (await checkIfEmailAvailable(email)) {
     toast.error('No user with that email was found.');
     return;
   }
@@ -101,7 +101,7 @@ function emailValidityChecker (email) {
   return true;
 }
 
-async function checkIfEmailExists (email) {
+async function checkIfEmailAvailable (email) {
   const response = await fetchGet(`/api/emails/${email}`);
   if (response?.status === 200) {
     return false;

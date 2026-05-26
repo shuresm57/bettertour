@@ -1,5 +1,5 @@
 <script>
-  import { formatDateLong as formatDate, statusClass } from '../../util/showUtil.js';
+  import { formatDateLong as formatDate } from '../../util/showUtil.js';
   import Riders from '../../components/Riders.svelte';
 
   let { entity: artist, shows, riders } = $props();

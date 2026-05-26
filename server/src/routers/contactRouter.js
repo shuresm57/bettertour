@@ -8,12 +8,12 @@ router.post('/api/contact', generalLimiter, async (req, res) => {
   const { name, email, message } = req.body;
 
   if (!name || !email || !message) {
-    return res.status(400).send('Name, email and message are required.');
+    return res.status(400).send({ errorMessage: 'Name, email and message are required.' });
   }
 
   try {
     await sendContactEmail(name, email, message);
-    res.status(200).send({ errorMessage: 'Message sent.' });
+    res.status(200).send({ data: 'Message sent.' });
   } catch {
     res.status(500).send({ errorMessage: 'Failed to send message.' });
   }

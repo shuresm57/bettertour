@@ -41,7 +41,11 @@
   });
 
   onDestroy(() => {
-      socket.disconnect();
+    socket.off('connect');
+    socket.off('server-sends-show-request');
+    socket.off('server-sends-acceptance');
+    socket.off('server-sends-show-update');
+    socket.disconnect();
   });
 
   async function handleSubmit(formData) {

@@ -9,27 +9,33 @@ export function registerShowSocket (io) {
   io.use((socket, next) => {
     const cookies = cookie.parse(socket.request.headers.cookie ?? '');
     const token = cookies.token;
-    if (!token) return next(new Error('Unauthorized'));
+    if (!token) {
+      return next(new Error('Unauthorized'));
+    }
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) return next(new Error('Invalid token'));
+      if (err) {
+        return next(new Error('Invalid token'));
+      }
       socket.user = user;
       next();
     });
   });
 
   io.on('connection', (socket) => {
-    console.log('A new socket connected with id', socket.id);
-
     socket.on('client-joins', (userId) => {
       socket.join(userId);
     });
 
     socket.on('venue-sends-show-request', (data) => {
       const artist = findArtistByEmail(data.artistEmail);
-      if (!artist) return;
+      if (!artist) {
+        return;
+      }
 
       const venue = findVenueByUserId(data.venueId);
-      if (!venue) return;
+      if (!venue) {
+        return;
+      }
 
       const result = createShow({
         date: data.date,
@@ -38,7 +44,7 @@ export function registerShowSocket (io) {
         contactOfDay: data.contact_of_day,
         status: 'pending'
       });
-      
+
       const showId = result.lastInsertRowid;
 
       createShowParticipant({ showId, userId: data.venueId, artistId: null, venueId: venue.venue_id, role: 'venue' });
@@ -56,8 +62,6 @@ export function registerShowSocket (io) {
         artist_name: artist.artist_name
       };
 
-      
-
       io.to(artist.user_id).emit('server-sends-show-request', showPayload);
       socket.emit('server-creates-show', showPayload);
     });
@@ -71,12 +75,10 @@ export function registerShowSocket (io) {
     socket.on('venue-updates-show', (data) => {
       const participants = getShowParticipants(data.show_id);
       const artistParticipant = participants.find(p => p.role === 'artist');
-      if (!artistParticipant) return;
+      if (!artistParticipant) {
+        return;
+      }
       io.to(artistParticipant.user_id).emit('server-sends-show-update', data);
-    });
-
-    socket.on('disconnect', () => {
-      console.log('A socket disconnected', socket.id);
     });
   });
 }

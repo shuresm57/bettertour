@@ -38,7 +38,11 @@ router.post('/api/register', authLimiter, async (req, res) => {
     createVenueUser({ venueId: result.lastInsertRowid, userId, role: 'member' });
   }
 
-  sendWelcomeEmail(email, email);
+  try {
+    await sendWelcomeEmail(email, name);
+  } catch (error) {
+    console.error('Failed to send welcome email:', error);
+  }
   res.status(201).send({ data: 'User registered successfully.' });
 });
 
