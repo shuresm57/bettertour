@@ -2,11 +2,11 @@ import db from '../connection.js';
 
 export function findArtistByEmail (email) {
   return db.prepare(`
-    SELECT a.*, au.user_id
-    FROM artist a
-    JOIN artist_user au ON a.artist_id = au.artist_id
-    JOIN user u ON au.user_id = u.user_id
-    WHERE u.email = ?
+    SELECT artist.*, artist_user.user_id
+    FROM artist
+    JOIN artist_user ON artist.artist_id = artist_user.artist_id
+    JOIN user ON artist_user.user_id = user.user_id
+    WHERE user.email = ?
     `).get(email);
 }
 

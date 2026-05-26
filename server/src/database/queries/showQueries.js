@@ -31,22 +31,22 @@ export function updateShowStatus (showId, status) {
 
 export function getShowsByArtistId (artistId) {
   return db.prepare(`
-    SELECT s.*, sp_venue.user_id AS venueId
-    FROM show s
-    JOIN show_participant sp ON s.show_id = sp.show_id AND sp.role = 'artist'
-    LEFT JOIN show_participant sp_venue ON s.show_id = sp_venue.show_id AND sp_venue.role = 'venue'
+    SELECT show.*, sp_venue.user_id AS venueId
+    FROM show
+    JOIN show_participant sp ON show.show_id = sp.show_id AND sp.role = 'artist'
+    LEFT JOIN show_participant sp_venue ON show.show_id = sp_venue.show_id AND sp_venue.role = 'venue'
     WHERE sp.artist_id = ?
-    ORDER BY s.date ASC
+    ORDER BY show.date ASC
   `).all(artistId);
 }
 
 export function getShowsWithArtistsByVenueId (venueId) {
   return db.prepare(`
-    SELECT s.*, a.artist_name
-    FROM show s
-    JOIN show_participant sp_venue ON s.show_id = sp_venue.show_id AND sp_venue.venue_id = ? AND sp_venue.role = 'venue'
-    LEFT JOIN show_participant sp_artist ON s.show_id = sp_artist.show_id AND sp_artist.role = 'artist'
-    LEFT JOIN artist a ON sp_artist.artist_id = a.artist_id
-    ORDER BY s.date ASC
+    SELECT show.*, artist.artist_name
+    FROM show
+    JOIN show_participant sp_venue ON show.show_id = sp_venue.show_id AND sp_venue.venue_id = ? AND sp_venue.role = 'venue'
+    LEFT JOIN show_participant sp_artist ON show.show_id = sp_artist.show_id AND sp_artist.role = 'artist'
+    LEFT JOIN artist ON sp_artist.artist_id = artist.artist_id
+    ORDER BY show.date ASC
   `).all(venueId);
 }

@@ -2,10 +2,10 @@ import db from '../connection.js';
 
 export function findVenueByEmail (email) {
   return db.prepare(`
-    SELECT v.*, vu.user_id
-    FROM venue v
-    JOIN venue_user vu ON v.venue_id = vu.venue_id
-    WHERE v.contact_email = ?
+    SELECT venue.*, venue_user.user_id
+    FROM venue
+    JOIN venue_user ON venue.venue_id = venue_user.venue_id
+    WHERE venue.contact_email = ?
     `).get(email);
 }
 
