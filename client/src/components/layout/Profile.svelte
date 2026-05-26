@@ -3,11 +3,11 @@
   import { fetchPut } from '../../util/fetchUtil.js';
   import { handleChangePassword, handleDeleteAccount } from '../../services/profileService.js';
 
-  let { entity } = $props();
+  let { entity, apiPath, nameKey, nameLabel, description, hasAddress = false } = $props();
 
-  let name = $state(entity.artist_name ?? '');
+  let name = $state(entity[nameKey] ?? '');
+  let address = $state(entity.address ?? '');
   let bio = $state(entity.bio ?? '');
-
   let contactEmail = $state(entity.contact_email ?? '');
 
   let currentPassword = $state('');
@@ -15,11 +15,14 @@
   let confirmPassword = $state('');
 
   async function saveProfile() {
-    const res = await fetchPut('/api/artist/profile', { name, bio, contact_email: contactEmail });
+    const body = { name, bio, contact_email: contactEmail };
+    if (hasAddress) body.address = address;
+    const res = await fetchPut(apiPath, body);
     if (res?.ok) {
-      entity.artist_name = name;
+      entity[nameKey] = name;
       entity.bio = bio;
       entity.contact_email = contactEmail;
+      if (hasAddress) entity.address = address;
       toast.success('Profile updated.');
     } else {
       toast.error('Failed to update profile.');
@@ -41,13 +44,19 @@
   <div class="card p-6 space-y-4">
     <div>
       <h2 class="text-xl font-bold">Edit Profile</h2>
-      <p class="text-sm text-surface-400 mt-1">Update your public artist information.</p>
+      <p class="text-sm text-surface-400 mt-1">{description}</p>
     </div>
     <div class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-medium text-surface-400">Artist name</label>
+        <label class="text-xs font-medium text-surface-400">{nameLabel}</label>
         <input bind:value={name} class="input text-sm px-3 py-2 rounded-lg w-full" />
       </div>
+      {#if hasAddress}
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-medium text-surface-400">Address</label>
+          <input bind:value={address} class="input text-sm px-3 py-2 rounded-lg w-full" />
+        </div>
+      {/if}
       <div class="flex flex-col gap-1">
         <label class="text-xs font-medium text-surface-400">Bio</label>
         <textarea bind:value={bio} rows="3" class="input text-sm px-3 py-2 rounded-lg w-full resize-none"></textarea>

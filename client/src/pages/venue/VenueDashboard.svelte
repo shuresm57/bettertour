@@ -2,7 +2,6 @@
   import Dashboard from '../../components/layout/Dashboard.svelte';
   import Overview from './Overview.svelte';
   import Shows from './Shows.svelte';
-  import Profile from './Profile.svelte';
 </script>
 
 <Dashboard
@@ -10,7 +9,7 @@
   title="BetterTour | Venue Dashboard"
   entityKey="venue"
   ridersKey="techSpecs"
+  profileConfig={{ apiPath: '/api/venue/profile', nameKey: 'venue_name', nameLabel: 'Venue name', description: 'Update your venue information.', hasAddress: true }}
   {Overview}
   {Shows}
-  {Profile}
 />

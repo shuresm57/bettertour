@@ -70,7 +70,6 @@
     {/if}
   </div>
 
-  <!-- Booking Requests -->
   <div class="card p-6 border border-surface-700">
     <h2 class="text-base font-semibold text-surface-300 mb-4">
       Booking Requests
