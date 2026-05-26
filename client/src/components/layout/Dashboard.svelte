@@ -1,7 +1,7 @@
 <script>
   import DashboardNav from './DashboardNav.svelte';
   import { onMount } from 'svelte';
-  import { fetchGet } from '../util/fetchUtil.js';
+  import { fetchGet } from '../../util/fetchUtil.js';
 
   let { apiPath, title, entityKey, ridersKey, Overview, Shows, Profile } = $props();
 
@@ -10,14 +10,17 @@
   let shows = $state([]);
   let riders = $state([]);
 
+  function parseShow (show) {
+    return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
+  }
+
   onMount(async () => {
     const res = await fetchGet(apiPath);
-    if (res?.ok) {
-      const { data } = await res.json();
-      entity = data[entityKey];
-      shows = data.shows.map(show => ({ ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} }));
-      riders = data[ridersKey] ?? [];
-    }
+    if (!res?.ok) return;
+    const { data } = await res.json();
+    entity = data[entityKey];
+    shows = data.shows.map(parseShow);
+    riders = data[ridersKey] ?? [];
   });
   
 </script>

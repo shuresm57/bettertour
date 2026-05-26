@@ -1,12 +1,13 @@
 <script>
   import { toast } from 'svelte-sonner';
-  import { fetchPut, fetchDelete } from '../../util/fetchUtil.js';
-  import { handleLogout } from '../../services/authService.js';
+  import { fetchPut } from '../../util/fetchUtil.js';
+  import { handleChangePassword, handleDeleteAccount } from '../../services/profileService.js';
 
   let { entity } = $props();
 
   let name = $state(entity.artist_name ?? '');
   let bio = $state(entity.bio ?? '');
+  
   let contactEmail = $state(entity.contact_email ?? '');
 
   let currentPassword = $state('');
@@ -26,29 +27,11 @@
   }
 
   async function changePassword() {
-    if (newPassword !== confirmPassword) {
-      toast.error('New passwords do not match.');
-      return;
-    }
-    const res = await fetchPut('/api/profile/password', { currentPassword, newPassword });
-    if (res?.ok) {
+    const ok = await handleChangePassword(currentPassword, newPassword, confirmPassword);
+    if (ok) {
       currentPassword = '';
       newPassword = '';
       confirmPassword = '';
-      toast.success('Password changed.');
-    } else {
-      const { errorMessage } = await res.json();
-      toast.error(errorMessage ?? 'Failed to change password.');
-    }
-  }
-
-  async function deleteAccount() {
-    if (!confirm('Are you sure you want to permanently delete your account? This cannot be undone.')) return;
-    const res = await fetchDelete('/api/profile');
-    if (res?.ok) {
-      handleLogout();
-    } else {
-      toast.error('Failed to delete account.');
     }
   }
 </script>
@@ -108,7 +91,7 @@
       <h2 class="text-xl font-bold text-red-400">Delete Account</h2>
       <p class="text-sm text-surface-400 mt-1">Permanently delete your account and all associated data. This cannot be undone.</p>
     </div>
-    <button onclick={deleteAccount} class="text-sm font-medium px-4 py-2 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 transition-colors">
+    <button onclick={handleDeleteAccount} class="text-sm font-medium px-4 py-2 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 transition-colors">
       Delete account
     </button>
   </div>

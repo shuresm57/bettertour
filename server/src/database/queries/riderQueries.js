@@ -16,10 +16,11 @@ export function getVenueRider (venueId) {
     `).all(venueId);
 }
 
-export function deleteRiderById (riderId, artistId, venueId) {
-  if (artistId) {
-    return db.prepare(`DELETE FROM rider WHERE rider_id = ? AND artist_id = ?`).run(riderId, artistId);
-  }
+export function deleteArtistRiderById (riderId, artistId) {
+  return db.prepare(`DELETE FROM rider WHERE rider_id = ? AND artist_id = ?`).run(riderId, artistId);
+}
+
+export function deleteVenueRiderById (riderId, venueId) {
   return db.prepare(`DELETE FROM rider WHERE rider_id = ? AND venue_id = ?`).run(riderId, venueId);
 }
 

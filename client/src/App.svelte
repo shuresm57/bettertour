@@ -2,15 +2,15 @@
   import { Router, Route } from "svelte-routing";
   import { Toaster } from 'svelte-sonner';
   
-  import Navbar from './components/Navbar.svelte'
+  import Navbar from './components/layout/Navbar.svelte'
   import LandingPage from './pages/public/LandingPage.svelte'
   import About from './pages/public/About.svelte'
   import Contact from './pages/public/Contact.svelte'
-  import Footer from './components/Footer.svelte'
+  import Footer from './components/layout/Footer.svelte'
   import Login from './pages/public/Login.svelte'
   import ResetPassword from './pages/public/ResetPassword.svelte'
   import PrivacyPolicy from './pages/public/PrivacyPolicy.svelte'
-  import PrivateRoute from './components/PrivateRoute.svelte';
+  import PrivateRoute from './components/routing/PrivateRoute.svelte';
   import ArtistDashboard from './pages/artist/ArtistDashboard.svelte';
   import VenueDashboard from './pages/venue/VenueDashboard.svelte';
 

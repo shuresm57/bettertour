@@ -1,6 +1,6 @@
 <script>
   import { formatDateLong as formatDate, statusClass } from '../../util/showUtil.js';
-  import Riders from '../../components/Riders.svelte';
+  import Riders from '../../components/riders/Riders.svelte';
 
   let { entity: venue, shows, riders: techSpecs } = $props();
 

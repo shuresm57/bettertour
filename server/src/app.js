@@ -12,6 +12,7 @@ import helmet from 'helmet';
 app.use(helmet());
 
 import cors from 'cors';
+
 app.use(cors({
   origin: process.env.CLIENT_URL ?? 'http://localhost:5173',
   credentials: true
@@ -64,10 +65,6 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.all('/{*splat}', (req, res) => {
-  res.status(404).send({ errorMessage: 'Route not found' });
-});
-
 //========================================
 //           Socket.io Server
 //========================================
@@ -83,9 +80,11 @@ const io = new Server(server, {
     credentials: true
   }
 });
+
 registerShowSocket(io);
 
-const PORT = process.env.PORT ?? 3000;
+const DEFAULT_PORT = 3000;
+const PORT = process.env.PORT ?? DEFAULT_PORT;
 
 server.listen(PORT, () => {
   console.log('Server running on port', PORT);

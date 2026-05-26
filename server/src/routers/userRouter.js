@@ -1,27 +1,19 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireArtist, requireVenue } from '../middleware/requireRole.js';
-import { findByEmail, findArtistByUserId, findVenueByUserId } from '../database/queries/userQueries.js';
+import { findByEmail } from '../database/queries/userQueries.js';
 import { getShowsByArtistId, getShowsWithArtistsByVenueId } from '../database/queries/showQueries.js';
 import { getArtistRider, getVenueRider } from '../database/queries/riderQueries.js';
+import { getUserType } from '../services/userService.js';
 
 const router = Router();
 
 router.get('/api/home', requireAuth, (req, res) => {
-  const user = findByEmail(req.user.email);
-  if (!user) {
+  const result = getUserType(req.user.email);
+  if (!result) {
     return res.status(404).send({ errorMessage: 'User not found' });
   }
-
-  const artist = findArtistByUserId(user.user_id);
-  const type = artist ? 'artist' : 'venue';
-  const payload = artist || findVenueByUserId(user.user_id);
-
-  if (!payload) {
-    return res.status(403).send({ errorMessage: 'No entity linked to this account' });
-  }
-
-  res.send({ data: { ...payload, userId: user.user_id }, type });
+  res.send({ data: { ...result.entity, userId: result.userId }, type: result.type });
 });
 
 router.get('/api/emails/:email', (req, res) => {

@@ -1,6 +1,6 @@
 <script>
   import { navigate } from 'svelte-routing';
-  import { userStore } from '../stores/userStore.svelte.js';
+  import { userStore } from '../../stores/userStore.svelte.js';
 
   let { children } = $props();
 

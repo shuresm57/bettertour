@@ -1,5 +1,5 @@
 <script>
-  import { fetchPost, fetchDelete } from '../util/fetchUtil.js';
+  import { fetchPost, fetchDelete } from '../../util/fetchUtil.js';
 
   let { riders: initialRiders } = $props();
   let riders = $state([...initialRiders]);

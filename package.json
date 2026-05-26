@@ -1,9 +1,4 @@
 {
-    "scripts": {
-        "client": "npm run dev --prefix client",
-        "server": "cd server && nodemon app.js",
-        "dev": "npm run server & npm run client"
-    },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "eslint": "^10.4.0",

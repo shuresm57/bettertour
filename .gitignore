@@ -156,3 +156,4 @@ package
 .gstack/
 
 .vscode
+.DS_Store

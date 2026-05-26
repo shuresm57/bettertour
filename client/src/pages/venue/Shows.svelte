@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import io from 'socket.io-client';
   import { toast } from 'svelte-sonner';
-  import ShowForm from '../../components/ShowForm.svelte';
+  import ShowForm from '../../components/shows/ShowForm.svelte';
   import { formatDate, statusClass } from '../../util/showUtil.js';
   import { userStore } from '../../stores/userStore.svelte.js';
   import { fetchPost, fetchPut, fetchDelete } from '../../util/fetchUtil.js';

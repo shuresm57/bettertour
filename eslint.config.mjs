@@ -14,9 +14,9 @@ export default defineConfig([
     languageOptions: { globals: globals.node },
   },
 
-  ...sveltePlugin.configs["flat/recommended"],
   {
-    files: ["**/*.svelte"],
+    files: ["client/**/*.{js,mjs,cjs}"],
     languageOptions: { globals: globals.browser },
   },
+
 ]);

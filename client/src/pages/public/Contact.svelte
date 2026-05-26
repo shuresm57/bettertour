@@ -1,28 +1,19 @@
   <script>
-  import { toast } from 'svelte-sonner';
-  import { fetchPost } from '../../util/fetchUtil.js';
+  import { handleContact } from '../../services/contactService.js';
 
   let name = $state('');
   let email = $state('');
   let message = $state('');
   let submitting = $state(false);
 
-  async function handleContact() {
-    if (!name || !email || !message) {
-      toast.error('Please fill in all fields.');
-      return;
-    }
+  async function onContact() {
     submitting = true;
-    const response = await fetchPost('/api/contact', { name, email, message });
+    const ok = await handleContact(name, email, message);
     submitting = false;
-
-    if (response?.ok) {
-      toast.success('Message sent!');
+    if (ok) {
       name = '';
       email = '';
       message = '';
-    } else {
-      toast.error('Failed to send message. Try again later.');
     }
   }
 </script>
@@ -60,6 +51,6 @@
         <textarea class="textarea border-blue-500 focus:ring-blue-500 text-xl" rows="4" placeholder="Your message..." bind:value={message}></textarea>
       </label>
 
-      <button class="btn bg-blue-500 hover:bg-blue-400 text-white w-full font-bold py-4 text-xl" disabled={submitting} onclick={handleContact}>{submitting ? 'Sending...' : 'Send'}</button>
+      <button class="btn bg-blue-500 hover:bg-blue-400 text-white w-full font-bold py-4 text-xl" disabled={submitting} onclick={onContact}>{submitting ? 'Sending...' : 'Send'}</button>
     </div>
   </div>
