@@ -1,7 +1,7 @@
 <script>
   import { toast } from 'svelte-sonner';
   import { fetchPut, fetchDelete } from '../../util/fetchUtil.js';
-  import { handleLogout } from '../../util/authService.svelte.js';
+  import { handleLogout } from '../../util/authService.js';
 
   let { entity } = $props();
 

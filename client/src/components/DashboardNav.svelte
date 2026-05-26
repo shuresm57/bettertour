@@ -1,5 +1,5 @@
 <script>
-  import { handleLogout } from '../util/authService.svelte.js';
+  import { handleLogout } from '../util/authService.js';
 
   let { activeSection, onNavigate } = $props();
 

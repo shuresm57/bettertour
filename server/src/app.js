@@ -35,6 +35,15 @@ app.use(authRouter);
 import userRouter from './routers/userRouter.js';
 app.use(userRouter);
 
+import showRouter from './routers/showRouter.js';
+app.use(showRouter);
+
+import riderRouter from './routers/riderRouter.js';
+app.use(riderRouter);
+
+import profileRouter from './routers/profileRouter.js';
+app.use(profileRouter);
+
 import contactRouter from './routers/contactRouter.js';
 app.use(contactRouter);
 
