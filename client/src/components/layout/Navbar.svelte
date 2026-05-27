@@ -1,12 +1,21 @@
+<script>
+  import { userStore } from '../../stores/userStore.svelte.js';
+
+  const loginHref = $derived(userStore.user ? (userStore.user.type === 'artist' ? '/dashboard/artist' : '/dashboard/venue') : '/login');
+</script>
+
 <div class="flex flex-col flex-1">
   <nav class="flex items-center w-[90%] mx-auto mt-[3vh] px-10 py-10 rounded-lg outline-2 outline-offset-2 outline-blue-500">
-    <a href="/" class="text-2xl font-bold">BetterTour</a>
+    <a href="/" class="flex items-center gap-2 text-2xl font-bold">
+      <img src="/bt_favicon.svg" alt="BetterTour logo" class="w-8 h-8" />
+      BetterTour
+    </a>
     <div class="flex flex-1 justify-center gap-10">
       <a class="font-bold text-2xl" href="/">Home</a>
       <a class="font-bold text-2xl" href="/contact">Contact</a>
       <a class="font-bold text-2xl" href="/about">About</a>
     </div>
-    <a href="/login" class="btn-primary">Login</a>
+    <a href={loginHref} class="btn-primary">Login</a>
   </nav>
 
   <div class="flex-1 flex flex-col">
