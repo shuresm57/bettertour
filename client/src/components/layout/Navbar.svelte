@@ -2,6 +2,8 @@
   import { userStore } from '../../stores/userStore.svelte.js';
 
   const loginHref = $derived(userStore.user ? (userStore.user.type === 'artist' ? '/dashboard/artist' : '/dashboard/venue') : '/login');
+
+  let { children } = $props();
 </script>
 
 <div class="flex flex-col flex-1">
@@ -19,6 +21,6 @@
   </nav>
 
   <div class="flex-1 flex flex-col">
-    <slot />
+    {@render children()}
   </div>
 </div>
