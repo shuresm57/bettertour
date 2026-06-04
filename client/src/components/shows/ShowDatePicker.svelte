@@ -1,6 +1,8 @@
 <script>
   import { DatePicker } from '@skeletonlabs/skeleton-svelte';
 
+
+  // to select a date, we need to pass it as props
   let { onSelect } = $props();
 </script>
 

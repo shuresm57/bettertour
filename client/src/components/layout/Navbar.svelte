@@ -1,6 +1,11 @@
 <script>
   import { userStore } from '../../stores/userStore.svelte.js';
   
+  // <slot /> was a built-in compiler directive Svelte just knew where to put the content automatically
+  // With Svelte 5, it's plain JavaScript you have to explicitly receive it as a variable before you can use it.
+  // gets the page content that gets wrapped by this layout.
+  let { children } = $props();
+
   // if there is a logged in user check their type, if artist, go to the artist dashboard, if not go to the venue, fall back to login if none
   // derived so loginHref reactively updates if the user logs in or out and it is calculated by the state of userStore
   const loginHref = $derived(userStore.user ? (userStore.user.type === 'artist' ? '/dashboard/artist' : '/dashboard/venue') : '/login');
@@ -20,8 +25,8 @@
     <a href={loginHref} class="btn-primary">Login</a>
   </nav>
 
-  <!-- <slot /> renders the child page content here so every page gets the navbar without duplicating it. --> 
+  <!-- renders the child page content here so every page gets the navbar without duplicating it. --> 
   <div class="flex-1 flex flex-col">
-    <slot />
+    {@render children()}
   </div>
 </div>

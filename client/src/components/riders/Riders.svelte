@@ -1,8 +1,13 @@
 <script>
   import { fetchPost, fetchDelete } from '../../util/fetchUtil.js';
 
+  // props recieves data passed into this component
+  // props are read-only
   let { riders: initialRiders } = $props();
+  // creates a reactive copy of that prop
+  // so we can make changes without affecting the original prop
   let riders = $state([...initialRiders]);
+
   let showForm = $state(false);
   let newName = $state('');
   let newUrl = $state('');
@@ -20,6 +25,9 @@
   }
 
   async function deleteRider(rider) {
+    if (!confirm(`Delete "${rider.name}"?`)) {
+      return;
+    }
     const res = await fetchDelete(`/api/riders/${rider.id}`);
 
     if (res?.ok) {
@@ -34,6 +42,7 @@
       <h2 class="text-xl font-bold">Riders</h2>
       <p class="text-sm text-surface-400 mt-1">Your current rider documents.</p>
     </div>
+    <!-- flipping between the boolean value, i.e showing the form or not -->
     <button onclick={() => (showForm = !showForm)} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
       Add Rider
     </button>

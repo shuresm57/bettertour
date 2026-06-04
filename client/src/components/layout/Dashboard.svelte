@@ -17,7 +17,7 @@
 
   // the spread operator of show is used to clone the object
   // then override the schedule field 
-  // if there is a show, parse it from JSON to an object - if none, default to empty object
+  // if there is a schedule, parse it from JSON to an object - if none, default to empty object
   function parseShow (show) {
     return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
   }
@@ -56,11 +56,11 @@
     <!-- if loaded false, show loading -->
     {#if !loaded}
       <p class="text-surface-400">Loading...</p>
-    <!-- if enitity couldnt be loaded and loaded not true, show loading -->
+    <!-- if loaded but entity is null, data failed to load -->
     {:else if !entity}
       <p class="text-surface-400">Could not load data.</p>
     <!-- active section starts as overview -->
-    <!-- so show the profile, shows and riders -->
+    <!-- render the Overview component with all data -->
     {:else if activeSection === 'overview'}
       <Overview {entity} {shows} {riders} />
     {:else if activeSection === 'shows'}

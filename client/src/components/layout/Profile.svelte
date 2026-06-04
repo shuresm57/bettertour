@@ -3,8 +3,11 @@
   import { fetchPut } from '../../util/fetchUtil.js';
   import { handleChangePassword, handleDeleteAccount } from '../../services/profileService.js';
 
+  // props are shorthand for properties, you pass props to a component like you pass attributes to elements.
+  // we pass this as a nested props in the Dashboard component (profileConfig)
   let { entity, apiPath, nameKey, nameLabel, description, hasAddress = false } = $props();
 
+  // taken from the same props in dashboard
   let name = $state(entity[nameKey] ?? '');
   let address = $state(entity.address ?? '');
   let bio = $state(entity.bio ?? '');
@@ -15,6 +18,7 @@
   let confirmPassword = $state('');
 
   async function saveProfile() {
+    // prepares a payload to save the profile
     const body = { name, bio, contact_email: contactEmail };
     if (hasAddress) body.address = address;
     const res = await fetchPut(apiPath, body);
@@ -29,9 +33,11 @@
     }
   }
 
+
   async function changePassword() {
     const ok = await handleChangePassword(currentPassword, newPassword, confirmPassword);
     if (ok) {
+      // clear the states
       currentPassword = '';
       newPassword = '';
       confirmPassword = '';
