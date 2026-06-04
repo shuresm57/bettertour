@@ -4,51 +4,73 @@
   import { onMount } from 'svelte';
   import { fetchGet } from '../../util/fetchUtil.js';
 
+
+  // used as variables for the Dashboard component
   let { apiPath, title, entityKey, ridersKey, profileConfig, Overview, Shows } = $props();
 
+  // the svelte runes $state is used to declare reactive variables 
   let activeSection = $state('overview');
   let entity = $state(null);
   let shows = $state([]);
   let riders = $state([]);
   let loaded = $state(false);
 
+  // the spread operator of show is used to clone the object
+  // then override the schedule field 
+  // if there is a show, parse it from JSON to an object - if none, default to empty object
   function parseShow (show) {
     return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
   }
 
+  // when the component mounts, fetchGet the provided apiPath
+  // if the response is missing or failed, mark as loaded and return early to prevent parsing bad data
+  // to avoid crashing or processing data from a failed or missing network response.
+
   onMount(async () => {
     const res = await fetchGet(apiPath);
     if (!res?.ok) { 
+      // so if no data, it will show the could not load data
       loaded = true; 
       return; 
     }
+
+    // we expect data from the fetch
     const { data } = await res.json();
+    // entity either venue or artist
     entity = data[entityKey];
     shows = data.shows.map(parseShow);
+    // if the array is empty, make and empty array - so we can add riders if empty
     riders = data[ridersKey] ?? [];
     loaded = true;
   });
   
 </script>
 
+<!--  svelte:head is used to set things such as CDN scripts and titles specific for pages --> 
 <svelte:head>
   <title>{title}</title>
 </svelte:head>
 
 <div class="flex-1">
   <div class="pt-24 px-8 pb-8 max-w-5xl mx-auto">
+    <!-- if loaded false, show loading -->
     {#if !loaded}
       <p class="text-surface-400">Loading...</p>
+    <!-- if enitity couldnt be loaded and loaded not true, show loading -->
     {:else if !entity}
       <p class="text-surface-400">Could not load data.</p>
+    <!-- active section starts as overview -->
+    <!-- so show the profile, shows and riders -->
     {:else if activeSection === 'overview'}
       <Overview {entity} {shows} {riders} />
     {:else if activeSection === 'shows'}
       <Shows {shows} />
     {:else if activeSection === 'profile'}
+    <!-- render Profile with the entity and spread profileConfig as props. 
+     because different entities (artist/venue) need different profile field configurations. -->
       <Profile {entity} {...profileConfig} />
     {/if}
   </div>
 </div>
-
+<!-- always rendered outside the conditionalsm the nav needs to be visible regardless of which section is active, and updating activeSection is what drives the section switching above. -->
 <DashboardNav {activeSection} onNavigate={(id) => (activeSection = id)} />

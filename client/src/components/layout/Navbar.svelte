@@ -1,6 +1,8 @@
 <script>
   import { userStore } from '../../stores/userStore.svelte.js';
-
+  
+  // if there is a logged in user check their type, if artist, go to the artist dashboard, if not go to the venue, fall back to login if none
+  // derived so loginHref reactively updates if the user logs in or out and it is calculated by the state of userStore
   const loginHref = $derived(userStore.user ? (userStore.user.type === 'artist' ? '/dashboard/artist' : '/dashboard/venue') : '/login');
 </script>
 
@@ -18,6 +20,7 @@
     <a href={loginHref} class="btn-primary">Login</a>
   </nav>
 
+  <!-- <slot /> renders the child page content here so every page gets the navbar without duplicating it. --> 
   <div class="flex-1 flex flex-col">
     <slot />
   </div>
