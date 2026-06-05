@@ -22,11 +22,6 @@
       socket.emit('client-joins', userStore.user.userId);
     });
 
-    socket.on('server-sends-show-request', (data) => {
-      shows = [...shows, data];
-      toast.info(`New booking request from ${data.artist_name ?? 'an artist'}.`);
-    });
-
     socket.on('server-creates-show', (data) => {
       shows = [...shows, data];
       toast.success('Show request sent to artist.');
