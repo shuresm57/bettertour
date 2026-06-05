@@ -1,22 +1,26 @@
 <script>
   import DashboardNav from './DashboardNav.svelte';
   import Profile from './Profile.svelte';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { fetchGet } from '../../util/fetchUtil.js';
+  import io from 'socket.io-client';
+  import { toast } from 'svelte-sonner';
+  import { userStore } from '../../stores/userStore.svelte.js';
 
 
   // used as variables for the Dashboard component
   let { apiPath, title, entityKey, ridersKey, profileConfig, Overview, Shows } = $props();
 
-  // the svelte runes $state is used to declare reactive variables 
+  // the svelte runes $state is used to declare reactive variables
   let activeSection = $state('overview');
   let entity = $state(null);
   let shows = $state([]);
   let riders = $state([]);
   let loaded = $state(false);
+  let dashboardSocket;
 
   // the spread operator of show is used to clone the object
-  // then override the schedule field 
+  // then override the schedule field
   // if there is a schedule, parse it from JSON to an object - if none, default to empty object
   function parseShow (show) {
     return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
@@ -28,10 +32,10 @@
 
   onMount(async () => {
     const res = await fetchGet(apiPath);
-    if (!res?.ok) { 
+    if (!res?.ok) {
       // so if no data, it will show the could not load data
-      loaded = true; 
-      return; 
+      loaded = true;
+      return;
     }
 
     // we expect data from the fetch
@@ -42,6 +46,20 @@
     // if the array is empty, make and empty array - so we can add riders if empty
     riders = data[ridersKey] ?? [];
     loaded = true;
+
+    // persistent socket so show requests are received regardless of which section is active
+    if (entityKey === 'artist') {
+      dashboardSocket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
+      dashboardSocket.on('connect', () => dashboardSocket.emit('client-joins', userStore.user.userId));
+      dashboardSocket.on('server-sends-show-request', (data) => {
+        shows = [...shows, { ...data, schedule: data.schedule ?? {} }];
+        toast.info('New show request received.');
+      });
+    }
+  });
+
+  onDestroy(() => {
+    dashboardSocket?.disconnect();
   });
   
 </script>
