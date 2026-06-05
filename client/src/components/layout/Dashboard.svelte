@@ -17,7 +17,7 @@
   let dashboardSocket;
 
   function parseShow (show) {
-    return { ...show, schedule: typeof show.schedule === 'string' ? JSON.parse(show.schedule) : (show.schedule ?? {}) };
+    return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
   }
 
   onMount(async () => {
@@ -36,7 +36,7 @@
       dashboardSocket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
       dashboardSocket.on('connect', () => dashboardSocket.emit('client-joins', userStore.user.userId));
       dashboardSocket.on('server-sends-show-request', (data) => {
-        shows = [...shows, parseShow(data)];
+        shows = [...shows, { ...data, schedule: data.schedule ?? {} }];
         toast.info('New show request received.');
       });
     }
