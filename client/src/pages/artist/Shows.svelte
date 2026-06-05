@@ -15,16 +15,18 @@
   let selectedShow = $state(null);
   let editingShow = $state(false);
 
+  // merge shows pushed by the Dashboard-level socket into the local list
+  $effect(() => {
+    const ids = new Set(shows.map(s => s.show_id));
+    const incoming = initialShows.filter(s => !ids.has(s.show_id));
+    if (incoming.length > 0) shows = [...shows, ...incoming];
+  });
+
   onMount(() => {
     socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
 
     socket.on('connect', () => {
       socket.emit('client-joins', userStore.user.userId);
-    });
-
-    socket.on('server-sends-show-request', (data) => {
-      shows = [...shows, data];
-      toast.info('New show request received.');
     });
 
     socket.on('server-sends-acceptance', (data) => {
@@ -42,7 +44,6 @@
 
   onDestroy(() => {
     socket.off('connect');
-    socket.off('server-sends-show-request');
     socket.off('server-sends-acceptance');
     socket.off('server-sends-show-update');
     socket.disconnect();

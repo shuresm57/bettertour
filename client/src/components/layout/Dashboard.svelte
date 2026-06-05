@@ -1,8 +1,11 @@
 <script>
   import DashboardNav from './DashboardNav.svelte';
   import Profile from './Profile.svelte';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { fetchGet } from '../../util/fetchUtil.js';
+  import io from 'socket.io-client';
+  import { toast } from 'svelte-sonner';
+  import { userStore } from '../../stores/userStore.svelte.js';
 
   let { apiPath, title, entityKey, ridersKey, profileConfig, Overview, Shows } = $props();
 
@@ -11,22 +14,36 @@
   let shows = $state([]);
   let riders = $state([]);
   let loaded = $state(false);
+  let dashboardSocket;
 
   function parseShow (show) {
-    return { ...show, schedule: show.schedule ? JSON.parse(show.schedule) : {} };
+    return { ...show, schedule: typeof show.schedule === 'string' ? JSON.parse(show.schedule) : (show.schedule ?? {}) };
   }
 
   onMount(async () => {
     const res = await fetchGet(apiPath);
-    if (!res?.ok) { 
-      loaded = true; 
-      return; 
+    if (!res?.ok) {
+      loaded = true;
+      return;
     }
     const { data } = await res.json();
     entity = data[entityKey];
     shows = data.shows.map(parseShow);
     riders = data[ridersKey] ?? [];
     loaded = true;
+
+    if (entityKey === 'artist') {
+      dashboardSocket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
+      dashboardSocket.on('connect', () => dashboardSocket.emit('client-joins', userStore.user.userId));
+      dashboardSocket.on('server-sends-show-request', (data) => {
+        shows = [...shows, parseShow(data)];
+        toast.info('New show request received.');
+      });
+    }
+  });
+
+  onDestroy(() => {
+    dashboardSocket?.disconnect();
   });
   
 </script>
