@@ -7,21 +7,30 @@
   import { userStore } from '../../stores/userStore.svelte.js';
   import { fetchPost, fetchPut, fetchDelete } from '../../util/fetchUtil.js';
 
+  // get the shows from the Dashboard component
   let { shows: initialShows } = $props();
 
+  // not derived because we need to modify them
   let shows = $state([...initialShows]);
+
+  // initialize the socket
   let socket;
+
   let showForm = $state(false);
   let selectedShow = $state(null);
   let editingShow = $state(false);
 
   onMount(() => {
+    // withCreds sends the JWT cookie
     socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
 
+    // when the socket connects, immediately tell the server who is joining.
     socket.on('connect', () => {
+       // send an event to the server
       socket.emit('client-joins', userStore.user.userId);
     });
 
+    
     socket.on('server-sends-show-request', (data) => {
       shows = [...shows, data];
       toast.info(`New booking request from ${data.artist_name ?? 'an artist'}.`);

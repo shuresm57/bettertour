@@ -1,6 +1,7 @@
 <script>
     import { handleResetPassword } from '../../services/authService.js';
 
+    // the token is taken from the URL by token=uuid here (query parameter)
     const token = new URLSearchParams(window.location.search).get('token');
 
     let passwordOne = $state('');

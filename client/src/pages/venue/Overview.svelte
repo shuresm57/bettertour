@@ -4,6 +4,8 @@
 
   let { entity: venue, shows, riders: techSpecs } = $props();
 
+  // derived because they are owned by the parent
+  // used to fill the Booking Requests and upcoming shows
   const confirmed = $derived(shows.filter(show => show.status === 'confirmed'));
   const pending = $derived(shows.filter(show => show.status === 'pending'));
   const nextShow = $derived(confirmed[0]);

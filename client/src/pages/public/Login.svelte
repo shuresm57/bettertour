@@ -15,6 +15,8 @@
 
   let recoveryEmail = $state('');
 
+  // checks used to disable buttons
+  // so multiple requests can not be made
   let loginSubmitting = $state(false);
   let signupSubmitting = $state(false);
   let recoverySubmitting = $state(false);
@@ -78,6 +80,8 @@
 
       <Tabs.Content value="signup">
         <div class="space-y-4 mt-4">
+          
+          <!-- styled button to pick the account type -->
           <Tabs value={signupType} onValueChange={(event) => (signupType = event.value)}>
             <Tabs.List class="justify-center">
               <Tabs.Trigger value="artist" class="text-xl">Artist</Tabs.Trigger>
