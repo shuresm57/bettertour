@@ -22,6 +22,8 @@
 
   onMount(() => {
     // withCreds sends the JWT cookie
+    // without it, the browser wont send cookies x-origin
+    // the server never recieves the JWT and cant authentice the socket connection
     socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
 
     // when the socket connects, immediately tell the server who is joining.
@@ -42,9 +44,13 @@
       toast.success('Show request sent to artist.');
     });
 
+    // the server emits with a data object
     socket.on('server-sends-acceptance', (data) => {
+      // find the matching show
       const show = shows.find(show => show.show_id === data.show_id);
+      // update the matching show to confirmed, leave all other shows unchanged
       shows = shows.map(show => show.show_id === data.show_id ? { ...show, status: 'confirmed' } : show);
+      // notify the venue only if the show was found locally
       if (show) toast.success(`${show.event_name ?? 'Show'} accepted by artist!`);
     });
   });
@@ -57,6 +63,7 @@
     socket.disconnect();
   });
   
+  // move to venueShowService.js
   async function handleSubmit(formData) {
     if (!formData) {
       showForm = false; return;
@@ -72,6 +79,7 @@
     } else {
       const response = await fetchPost('/api/shows', showData);
       const { data } = await response.json();
+      // svelte reactive assignment, creates new array and reassigns 'shows' which triggers a UI update
       shows = [...shows, data];
     }
     showForm = false;

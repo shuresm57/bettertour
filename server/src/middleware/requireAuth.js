@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 
+// sessions are stateful, the sessions lives with the server and the client just holds a Session ID in the cookies
+// JWT are stateless, the token lives with the client
 export function requireAuth (req, res, next) {
   const token = req.cookies?.token;
 

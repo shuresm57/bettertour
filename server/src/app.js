@@ -15,6 +15,7 @@ import cors from 'cors';
 
 app.use(cors({
   origin: process.env.CLIENT_URL ?? 'http://localhost:5173',
+  // needed to send cookies, otherwise auth wont work
   credentials: true
 }));
 

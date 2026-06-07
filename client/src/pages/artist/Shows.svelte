@@ -15,10 +15,13 @@
   let selectedShow = $state(null);
   let editingShow = $state(false);
 
-  // merge any shows pushed by the Dashboard-level socket into the local list
+  // re-run whenever initialShows or shows changes
   $effect(() => {
+    // needed for fast look up
     const ids = new Set(shows.map(s => s.show_id));
+    // find any shows from the parent that arent in the local state yet
     const incoming = initialShows.filter(s => !ids.has(s.show_id));
+    // only update state if there is actually something new to add
     if (incoming.length > 0) shows = [...shows, ...incoming];
   });
 
@@ -49,6 +52,7 @@
     socket.disconnect();
   });
 
+  // move to artistShowService.js
   async function handleSubmit(formData) {
     if (!formData) {
       showForm = false; return;
@@ -111,6 +115,8 @@
 
   <div class="flex flex-col">
     {#each shows as show, i}
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="py-4 cursor-pointer hover:bg-surface-800/40 rounded-lg px-2 -mx-2 transition-colors {i !== 0 ? 'border-t border-surface-700' : ''}"
         onclick={() => selectedShow = show}
