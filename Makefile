@@ -11,7 +11,11 @@ seed:
 	@echo 'Running seed for BetterTour'
 	cd server && node src/database/seed.js
 
-help:
-	@echo 'To run the application, use the "make run" command. First time? run "make install". Need to reseed? Run "make seed"'.
+db:
+	sqlite3 -cmd ".headers on" -cmd ".mode column" server/src/database/bettertour.db
 
-.PHONY: install run seed
+help:
+	@echo 'To run the application, use the "make run" command.'
+	@echo 'First time? run "make install". Need to reseed? Run "make seed". Open the DB? Run "make db"'.
+
+.PHONY: install run seed db
