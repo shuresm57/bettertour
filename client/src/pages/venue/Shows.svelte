@@ -89,6 +89,7 @@
       selectedShow = null;
     }
   }
+
 </script>
 
 <div class="card p-6">
@@ -137,6 +138,9 @@
 {#if selectedShow}
   <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onclick={() => { selectedShow = null; editingShow = false; }}></div>
   <div class="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
+  <button onclick={handlePing} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
+      Ping Artist
+    </button>
     <div class="card bg-surface-900 border border-surface-700 p-8 w-full max-w-2xl space-y-4 pointer-events-auto">
       {#if editingShow}
         <h2 class="text-xl font-bold">Edit Show</h2>

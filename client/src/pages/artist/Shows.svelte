@@ -40,6 +40,8 @@
       if (selectedShow?.show_id === data.show_id) selectedShow = { ...selectedShow, ...data };
       toast.info(`${data.event_name ?? 'Show'} was updated.`);
     });
+
+
   });
 
   onDestroy(() => {
@@ -88,6 +90,9 @@
   }
 
   async function handleDelete() {
+    if(!confirm('Are you sure you want to delete the show?')){
+      return;
+    }
     const res = await fetchDelete(`/api/artist/shows/${selectedShow.show_id}`);
     if (res?.ok) {
       shows = shows.filter(show => show.show_id !== selectedShow.show_id);
@@ -106,7 +111,15 @@
   <p class="text-sm text-surface-400 mb-6">Your confirmed and pending bookings.</p>
 
   {#if showForm}
-    <ShowForm onSubmit={handleSubmit} />
+    <ShowForm
+      onSubmit={handleSubmit}
+      artistEmailField={false}
+      initialData={{
+        event_name: 'Syl | Release Party',
+        contact_of_day: 'Benjamin | 25 14 85 70',
+        schedule: { 'Get in': '20:00', 'Show': '21:00' }
+      }}
+    />
   {/if}
 
   <div class="flex flex-col">

@@ -35,5 +35,6 @@ export function registerShowSocket (io) {
       if (!artistUserId) return;
       io.to(artistUserId).emit('server-sends-show-update', data);
     });
+
   });
 }
