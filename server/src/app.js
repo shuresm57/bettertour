@@ -89,11 +89,3 @@ const PORT = process.env.PORT ?? DEFAULT_PORT;
 server.listen(PORT, () => {
   console.log('Server running on port', PORT);
 });
-
-// process.once('SIGUSR2', function () {
-//   process.kill(process.pid, 'SIGUSR2');
-// });
-
-// process.on('SIGINT', function () {
-//   process.kill(process.pid, 'SIGINT');
-// });
