@@ -2,9 +2,9 @@
 
 Tour management platform for artists and venues.
 
-Artists can create shows, upload tech riders, and respond to booking requests. Venues can browse artists, send booking requests, and manage their show schedule.
+Artists can create shows, upload tech riders, and respond to show requests. Venues can browse artists, send booking requests, and manage their show schedule.
 
-This is the exam project for the Node.js elective at KEA, Spring 2026.
+This is the exam project for the Node.js elective at EK, Spring 2026.
 
 ## Running the project
 
