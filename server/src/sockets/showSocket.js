@@ -36,5 +36,11 @@ export function registerShowSocket (io) {
       io.to(artistUserId).emit('server-sends-show-update', data);
     });
 
+    socket.on('venue-deletes-show', (data) => {
+      const artistUserId = getArtistUserIdForShow(data.show_id);
+      if (!artistUserId) return;
+      io.to(artistUserId).emit('server-sends-show-deletion', data);
+    })
+    
   });
 }

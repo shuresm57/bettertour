@@ -20,6 +20,9 @@
   }
 
   async function deleteRider(rider) {
+    if(!confirm(`Are you sure you want to delete '${rider.name}'?`)){
+      return;
+    }
     const res = await fetchDelete(`/api/riders/${rider.id}`);
 
     if (res?.ok) {

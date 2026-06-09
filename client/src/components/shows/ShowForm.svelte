@@ -6,7 +6,7 @@
   let newEventName = $state(initialData?.event_name ?? '');
   let newDate = $state(initialData?.date ?? '');
   let newContact = $state(initialData?.contact_of_day ?? '');
-  let newArtistEmail = $state('');
+  let newArtistEmail = $state(initialData?.artistEmail ?? '');
   let scheduleEntries = $state(
     initialData?.schedule && Object.keys(initialData.schedule).length > 0
       ? Object.entries(initialData.schedule).map(([key, value]) => ({ key, value }))

@@ -83,6 +83,10 @@
   }
 
   async function handleDelete() {
+    if(!confirm(`Are you sure you want to delete '${selectedShow.event_name}'?`)){
+      return
+    }
+    socket.emit('venue-deletes-show', { ...selectedShow });
     const res = await fetchDelete(`/api/shows/${selectedShow.show_id}`);
     if (res?.ok) {
       shows = shows.filter(show => show.show_id !== selectedShow.show_id);
@@ -102,7 +106,16 @@
   <p class="text-sm text-surface-400 mb-6">Your upcoming and pending shows.</p>
 
   {#if showForm}
-    <ShowForm onSubmit={handleSubmit} artistEmailField={true} />
+    <ShowForm
+      onSubmit={handleSubmit}
+      artistEmailField={true}
+      initialData={{
+        event_name: 'Syl | Summer Tour, Train 2026',
+        contact_of_day: 'Benjamin | 25 14 85 70',
+        schedule: { 'Get in': '16:00', 'Soundcheck': '18:00', 'Support S/C': '19:00', 'Show': '22:00' },
+        artistEmail: 'ben@syl.dk',
+      }}
+    />
   {/if}
 
   {#if shows.length > 0}
@@ -138,9 +151,6 @@
 {#if selectedShow}
   <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onclick={() => { selectedShow = null; editingShow = false; }}></div>
   <div class="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
-  <button onclick={handlePing} class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-surface-100 transition-colors">
-      Ping Artist
-    </button>
     <div class="card bg-surface-900 border border-surface-700 p-8 w-full max-w-2xl space-y-4 pointer-events-auto">
       {#if editingShow}
         <h2 class="text-xl font-bold">Edit Show</h2>

@@ -14,17 +14,16 @@
   let showForm = $state(false);
   let selectedShow = $state(null);
   let editingShow = $state(false);
+  let deletedIds = new Set();
 
-  // merge shows pushed by the Dashboard-level socket into the local list
   $effect(() => {
-    const ids = new Set(shows.map(s => s.show_id));
-    const incoming = initialShows.filter(s => !ids.has(s.show_id));
+    const ids = new Set(shows.map(show => show.show_id));
+    const incoming = initialShows.filter(show => !ids.has(show.show_id) && !deletedIds.has(show.show_id));
     if (incoming.length > 0) shows = [...shows, ...incoming];
   });
 
   onMount(() => {
     socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
-
     socket.on('connect', () => {
       socket.emit('client-joins', userStore.user.userId);
     });
@@ -41,13 +40,19 @@
       toast.info(`${data.event_name ?? 'Show'} was updated.`);
     });
 
-
+    socket.on('server-sends-show-deletion', (data) => {
+      deletedIds.add(data.show_id);
+      shows = shows.filter(show => show.show_id !== data.show_id);
+      toast.info(`${data.event_name ?? 'Show'} was deleted.`);
+      if (selectedShow?.show_id === data.show_id) selectedShow = null;
+    });
   });
 
   onDestroy(() => {
     socket.off('connect');
     socket.off('server-sends-acceptance');
     socket.off('server-sends-show-update');
+    socket.off('server-sends-show-deletion');
     socket.disconnect();
   });
 
@@ -95,6 +100,7 @@
     }
     const res = await fetchDelete(`/api/artist/shows/${selectedShow.show_id}`);
     if (res?.ok) {
+      deletedIds.add(selectedShow.show_id);
       shows = shows.filter(show => show.show_id !== selectedShow.show_id);
       selectedShow = null;
     }

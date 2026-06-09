@@ -2,7 +2,7 @@ import 'dotenv/config';
 import './database/initDatabase.js';
 
 //========================================
-//            MIDDLEWARE
+//            Middleware
 //========================================
 
 import express from 'express';

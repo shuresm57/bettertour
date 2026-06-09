@@ -18,4 +18,7 @@ help:
 	@echo 'To run the application, use the "make run" command.'
 	@echo 'First time? run "make install". Need to reseed? Run "make seed". Open the DB? Run "make db"'.
 
-.PHONY: install run seed db
+lint:
+	npx eslint .
+
+.PHONY: install run seed db lint
